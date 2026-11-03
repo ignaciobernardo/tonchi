@@ -151,7 +151,9 @@ body.on-desktop #hint { display: none; }
   position: absolute; inset: 0; z-index: 9400; display: none; align-items: center; justify-content: center;
   background: rgba(251, 251, 252, .55); -webkit-backdrop-filter: blur(40px) saturate(1.6); backdrop-filter: blur(40px) saturate(1.6);
 }
-.launchpad.on { display: flex; animation: lpIn .28s ease-out; }
+.launchpad.on { display: flex; animation: lpIn .3s cubic-bezier(.2, .8, .3, 1); }
+.launchpad.out { animation: lpOut .22s cubic-bezier(.4, 0, .7, .6) forwards; pointer-events: none; }
+@keyframes lpOut { to { opacity: 0; transform: scale(1.08); } }
 @keyframes lpIn { from { opacity: 0; transform: scale(1.08); } }
 .lp-grid { display: grid; grid-template-columns: repeat(auto-fit, 120px); gap: 30px 24px; justify-content: center; width: min(760px, 90%); padding-bottom: 60px; }
 .lp-app { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
@@ -169,10 +171,6 @@ body.on-desktop #hint { display: none; }
   overflow: hidden; transition: box-shadow .2s;
 }
 .win.focus { box-shadow: 0 28px 70px rgba(20, 22, 40, .3), 0 0 0 .5px rgba(0, 0, 0, .2), inset 0 0 0 .5px rgba(255, 255, 255, .8); }
-.win.opening { animation: winIn .3s cubic-bezier(.2, .9, .3, 1.1); }
-@keyframes winIn { from { opacity: 0; transform: scale(.2); } 60% { opacity: 1; } }
-.win.closing { opacity: 0; transform: scale(.94); transition: opacity .18s, transform .18s; pointer-events: none; }
-.win.minimizing { transition: transform .45s cubic-bezier(.55, 0, .75, .4), opacity .4s ease-in .05s; pointer-events: none; }
 .win.animating { transition: left .34s cubic-bezier(.3, .8, .3, 1), top .34s cubic-bezier(.3, .8, .3, 1), width .34s cubic-bezier(.3, .8, .3, 1), height .34s cubic-bezier(.3, .8, .3, 1); }
 .titlebar { position: relative; flex: none; height: 46px; display: flex; align-items: center; padding: 0 16px; gap: 12px; cursor: default; }
 .title { position: absolute; left: 90px; right: 90px; text-align: center; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; opacity: .85; }

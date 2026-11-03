@@ -91,7 +91,7 @@
     const { vw, vh } = size();
     const maxW = vw - 24, maxH = vh - MB - 100;
     let W = Math.min(opts.w || app.w || 640, maxW), H = Math.min(opts.h || app.h || 440, maxH);
-    const el = h('div', { class: 'win opening ' + (app.cls || '') },
+    const el = h('div', { class: 'win ' + (app.cls || '') },
       h('div', { class: 'titlebar' },
         h('div', { class: 'lights' }, h('button', { class: 'l close', 'aria-label': 'Close' }), h('button', { class: 'l min', 'aria-label': 'Minimize' }), h('button', { class: 'l max', 'aria-label': 'Zoom' })),
         h('div', { class: 'title' }),
@@ -102,10 +102,13 @@
     let x = Math.round((vw - W) / 2 + off - 40), y = Math.round(Math.max(MB + 14, (vh - H) / 2 - 24) + off);
     x = Math.max(8, Math.min(x, vw - W - 8)); y = Math.min(y, vh - H - 70);
     Object.assign(el.style, { left: x + 'px', top: Math.max(MB + 8, y) + 'px', width: W + 'px', height: H + 'px', zIndex: ++zc });
-    const dr = dockRect(app.id);
-    el.style.transformOrigin = `${dr.cx - x}px ${dr.cy - y}px`;
     layer.append(el);
-    setTimeout(() => el.classList.remove('opening'), 360);
+    // macOS: the window fades in while growing from ~95%, overshooting a hair, then settling
+    el.animate([
+      { opacity: 0, transform: 'scale(.94)' },
+      { opacity: 1, transform: 'scale(1.012)', offset: .6 },
+      { opacity: 1, transform: 'scale(1)' }
+    ], { duration: 320, easing: 'cubic-bezier(.22,.8,.3,1)' });
 
     const w = {
       el, app, key, minimized: false, maximized: false,
@@ -160,23 +163,34 @@
     if (w.closing) return;
     w.closing = true;
     try { w.onClose && w.onClose(); } catch (e) { console.error(e); }
-    w.el.classList.add('closing');
     const i = wins.indexOf(w); if (i > -1) wins.splice(i, 1);
     refreshRunning();
-    setTimeout(() => w.el.remove(), 200);
+    w.el.style.pointerEvents = 'none';
+    // macOS: ~0.2s, fades out while scaling down to ~95%
+    const a = w.el.animate([
+      { opacity: 1, transform: 'scale(1)' },
+      { opacity: 0, transform: 'scale(.95)' }
+    ], { duration: 200, easing: 'cubic-bezier(.4,0,.7,.6)', fill: 'forwards' });
+    a.onfinish = () => w.el.remove();
     if (focused === w) focus(topVisible());
   }
 
+  // Genie-style minimize: the bottom of the window pinches toward the dock icon
+  const FULL = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
   function minimize(w) {
     if (w.minimized) return;
     const el = w.el, dr = dockRect(w.app.id);
-    const cx = el.offsetLeft + el.offsetWidth / 2, cy = el.offsetTop + el.offsetHeight / 2;
-    el.style.transformOrigin = '50% 50%';
-    el.classList.add('minimizing');
-    el.style.transform = `translate(${dr.cx - cx}px, ${dr.cy - cy}px) scale(.06)`;
-    el.style.opacity = '0';
+    const dx = dr.cx - (el.offsetLeft + el.offsetWidth / 2);
+    const dy = dr.cy - (el.offsetTop + el.offsetHeight);
+    el.style.transformOrigin = '50% 100%';
+    w.anim = el.animate([
+      { transform: 'translate(0,0) scale(1,1)', clipPath: FULL, opacity: 1 },
+      { transform: `translate(${dx * .35}px, ${dy * .5}px) scale(.82,.7)`, clipPath: 'polygon(0 0, 100% 0, 78% 100%, 22% 100%)', opacity: 1, offset: .5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(.07,.05)`, clipPath: 'polygon(0 0, 100% 0, 60% 100%, 40% 100%)', opacity: .5 }
+    ], { duration: 520, easing: 'cubic-bezier(.55,.05,.75,.45)', fill: 'forwards' });
     w.minimized = true;
-    setTimeout(() => { if (w.minimized) el.style.visibility = 'hidden'; }, 430);
+    el.style.pointerEvents = 'none';
+    w.anim.onfinish = () => { if (w.minimized) el.style.visibility = 'hidden'; };
     if (focused === w) focus(topVisible());
   }
 
@@ -184,10 +198,11 @@
     const el = w.el;
     w.minimized = false;
     el.style.visibility = '';
-    void el.offsetWidth;
-    el.style.transform = ''; el.style.opacity = '';
-    setTimeout(() => el.classList.remove('minimizing'), 440);
     focus(w);
+    if (!w.anim) return;
+    const a = w.anim;
+    a.onfinish = () => { a.cancel(); w.anim = null; el.style.pointerEvents = ''; el.style.transformOrigin = ''; };
+    a.reverse();
   }
 
   function toggleMax(w) {
@@ -426,7 +441,11 @@
       lp.append(grid);
       lp.classList.add('on');
     },
-    close() { lp.classList.remove('on'); },
+    close() {
+      if (!lp.classList.contains('on') || lp.classList.contains('out')) return;
+      lp.classList.add('out');
+      setTimeout(() => lp.classList.remove('on', 'out'), 220);
+    },
     toggle() { lp.classList.contains('on') ? this.close() : this.open(); }
   };
   lp.addEventListener('pointerdown', e => { if (e.target === lp || e.target.classList.contains('lp-grid')) Launchpad.close(); });
