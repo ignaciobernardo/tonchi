@@ -216,10 +216,9 @@
       ...['File', 'Edit', 'View', 'Go', 'Window', 'Help'].map(t => h('span', { class: 'mb-item mb-dim' }, t)));
     const clock = h('span', { class: 'mb-item mb-clock' });
     const right = h('div', { class: 'mb-right' },
-      h('span', { class: 'mb-item', html: Icons.battery() }),
-      h('span', { class: 'mb-item', html: Icons.wifi() }),
-      h('span', { class: 'mb-item', html: Icons.search() }),
-      h('span', { class: 'mb-item', html: Icons.control() }),
+      h('span', { class: 'mb-glyph', html: Icons.wifi() }),
+      h('span', { class: 'mb-glyph', html: Icons.search() }),
+      h('span', { class: 'mb-glyph', html: Icons.control() }),
       clock);
     bar.append(left, right);
 
@@ -267,19 +266,41 @@
   window.Files = Files;
 
   const iconsEl = $('#icons');
-  const hint = h('div', { class: 'dhint' }, 'double-click to open');
-  Files.list.forEach(f => {
-    const el = h('div', { class: 'dicon', tabindex: '0', 'data-file': f.id },
+  const hint = h('div', { class: 'dhint', style: `left:20px;top:${MB + 22 + Files.list.length * 142}px` }, 'double-click to open · drag to move');
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  function selectIcon(el) {
+    iconsEl.querySelectorAll('.dicon').forEach(x => x.classList.toggle('sel', x === el));
+  }
+  Files.list.forEach((f, i) => {
+    const el = h('div', { class: 'dicon', tabindex: '0', 'data-file': f.id, style: `left:20px;top:${MB + 22 + i * 142}px` },
       h('div', { class: 'dimg', html: f.icon() }), h('div', { class: 'dname' }, h('span', null, f.name)));
-    let touch = false;
-    el.addEventListener('pointerdown', e => { touch = e.pointerType !== 'mouse'; });
+    let touch = false, moved = false, justDragged = false;
+    el.addEventListener('pointerdown', e => {
+      if (e.button) return;
+      touch = e.pointerType !== 'mouse'; moved = false;
+      selectIcon(el);
+      const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
+      const mv = ev => {
+        const dx = ev.clientX - sx, dy = ev.clientY - sy;
+        if (!moved) { if (Math.hypot(dx, dy) < 5) return; moved = true; el.classList.add('dragging'); hint.classList.add('gone'); }
+        const { vw, vh } = WM.size();
+        el.style.left = clamp(ox + dx, 0, vw - el.offsetWidth) + 'px';
+        el.style.top = clamp(oy + dy, MB, vh - el.offsetHeight - 6) + 'px';
+      };
+      const up = () => {
+        window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+        el.classList.remove('dragging');
+        if (moved) { justDragged = true; setTimeout(() => justDragged = false, 60); }
+      };
+      window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+    });
     el.addEventListener('click', e => {
       e.stopPropagation();
-      iconsEl.querySelectorAll('.dicon').forEach(x => x.classList.toggle('sel', x === el));
-      hint.classList.add('gone');
+      if (justDragged) return;
+      selectIcon(el); hint.classList.add('gone');
       if (touch) Files.open(f.id);
     });
-    el.addEventListener('dblclick', () => Files.open(f.id));
+    el.addEventListener('dblclick', () => { if (!justDragged) Files.open(f.id); });
     el.addEventListener('keydown', e => { if (e.key === 'Enter') Files.open(f.id); });
     iconsEl.append(el);
   });
@@ -292,10 +313,12 @@
   });
 
   /* ------------------------------------------------------------ dock */
-  const DOCK = ['finder', 'launchpad', 'firefox', 'terminal', 'photobooth', 'notes', 'spotify', 'photos', 'calendar'];
-  const BASE = 56, GAP = 8, MAXS = 1.62, REACH = 120;
+  const DOCK = ['finder', 'launchpad', 'firefox', 'terminal', 'photobooth', 'notes', 'spotify', 'photos', 'calendar', 'contacts'];
+  const BASE = 56, GAP = 8, PADX = 12, MAXS = 1.7, REACH = 130;
   const tip = h('div', { class: 'dtip' });
   desk.append(tip);
+  let baseW = 0, dragging = false, justDragged = false;
+  const baseCenter = i => PADX + i * (BASE + GAP) + BASE / 2;
 
   function buildDock() {
     dockEl.innerHTML = '';
@@ -305,6 +328,7 @@
       const it = h('button', { class: 'ditem', 'data-app': id, 'aria-label': app.name },
         h('div', { class: 'dimg', html: app.icon() }), h('i', { class: 'dot' }));
       it.addEventListener('click', () => {
+        if (justDragged) return;
         if (id === 'launchpad') { Launchpad.toggle(); return; }
         Launchpad.close();
         const w = wins.filter(x => x.app.id === id)[0];
@@ -314,20 +338,23 @@
       });
       dockEl.append(it);
     });
+    dockEl.style.width = '';
+    baseW = dockEl.offsetWidth;
     refreshRunning();
   }
 
+  const dockItems = () => [...dockEl.querySelectorAll('.ditem')];
+
   function magnify(e) {
-    const items = [...dockEl.querySelectorAll('.ditem')];
+    if (dragging) return;
+    const items = dockItems();
     const dr = dockEl.getBoundingClientRect();
-    const mx = e ? e.clientX - dr.left : -9999;
-    const scales = items.map(it => {
-      const c = it.offsetLeft + it.offsetWidth / 2;
-      const d = Math.abs(mx - c);
-      return 1 + (MAXS - 1) * Math.pow(Math.max(0, 1 - d / REACH), 1.6);
-    });
+    const left = dr.left + dr.width / 2 - baseW / 2;     // left edge of the un-magnified dock
+    const mx = e ? e.clientX - left : -9999;
+    const scales = items.map((it, i) => 1 + (MAXS - 1) * Math.pow(Math.max(0, 1 - Math.abs(mx - baseCenter(i)) / REACH), 1.6));
     const extra = scales.map(s => (s - 1) * BASE);
     const total = extra.reduce((a, b) => a + b, 0);
+    dockEl.style.width = (baseW + total).toFixed(1) + 'px';   // the capsule grows with the icons
     let acc = 0, hov = null, best = 0;
     items.forEach((it, i) => {
       const tx = -total / 2 + acc + extra[i] / 2;
@@ -335,16 +362,56 @@
       it.style.transform = `translateX(${tx.toFixed(1)}px) scale(${scales[i].toFixed(3)})`;
       if (scales[i] > best) { best = scales[i]; hov = it; }
     });
-    if (e && hov && best > 1.12) {
+    if (e && hov && best > 1.15) {
       const r = hov.getBoundingClientRect(), d = desk.getBoundingClientRect();
       tip.textContent = Apps.by[hov.dataset.app].name;
       tip.style.left = r.left + r.width / 2 - d.left + 'px';
-      tip.style.top = r.top - d.top - 12 + 'px';
+      tip.style.top = r.top - d.top - 10 + 'px';
       tip.classList.add('show');
     } else tip.classList.remove('show');
   }
   dockEl.addEventListener('mousemove', magnify);
   dockEl.addEventListener('mouseleave', () => magnify(null));
+
+  // drag an icon sideways to rearrange the dock
+  dockEl.addEventListener('pointerdown', e => {
+    const it = e.target.closest('.ditem');
+    if (!it || e.button) return;
+    const sx = e.clientX;
+    let started = false;
+    const mv = ev => {
+      if (!started) {
+        if (Math.abs(ev.clientX - sx) < 6) return;
+        started = true; dragging = true;
+        it.classList.add('dragging'); tip.classList.remove('show'); dockEl.classList.add('reordering');
+        dockItems().forEach(x => { if (x !== it) x.style.transform = ''; });
+        dockEl.style.width = '';
+      }
+      const left = dockEl.getBoundingClientRect().left;
+      const items = dockItems(), cur = items.indexOf(it);
+      const idx = clamp(Math.round((ev.clientX - left - PADX - BASE / 2) / (BASE + GAP)), 0, items.length - 1);
+      if (idx !== cur) {
+        const before = new Map(items.map(x => [x, x.getBoundingClientRect().left]));
+        const ref = items[idx];
+        if (idx > cur) ref.after(it); else ref.before(it);
+        dockItems().forEach(x => {
+          if (x === it) return;
+          const d = before.get(x) - x.getBoundingClientRect().left;
+          if (d) { x.style.transition = 'none'; x.style.transform = `translateX(${d}px)`; void x.offsetWidth; x.style.transition = ''; x.style.transform = ''; }
+        });
+      }
+      const slot = left + baseCenter(dockItems().indexOf(it));
+      it.style.transform = `translateX(${ev.clientX - slot}px) translateY(-6px) scale(1.1)`;
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      if (!started) return;
+      it.classList.remove('dragging'); dockEl.classList.remove('reordering');
+      it.style.transform = '';
+      dragging = false; justDragged = true; setTimeout(() => justDragged = false, 60);
+    };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  });
 
   /* ------------------------------------------------------------ launchpad */
   const lp = $('#launchpad');

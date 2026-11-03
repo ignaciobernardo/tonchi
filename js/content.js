@@ -71,6 +71,16 @@ instagram.com/tonchimatta
     'assets/portrait.jpg'
   ],
 
+  // Contacts app
+  contacts: [
+    {
+      first: 'Trinidad', last: 'Matta Schilling', nickname: 'Tonchi', pronouns: 'she · her', posterName: 'Tonchi Matta Schilling',
+      fields: [
+        { label: 'Gmail', value: 'trinidadmattasch@gmail.com', link: 'mailto:trinidadmattasch@gmail.com' }
+      ]
+    }
+  ],
+
   // Calendar events: { date: 'YYYY-MM-DD', title: '...' }
   events: [
     { date: '2026-11-12', title: 'Lorem ipsum' },

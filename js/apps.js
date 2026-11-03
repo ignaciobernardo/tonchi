@@ -153,24 +153,34 @@
   });
 
   /* ---------- Photo Booth ---------- */
+  const PB_ICONS = {
+    four: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>',
+    photo: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="3"/><circle cx="12" cy="10.2" r="2.6" fill="currentColor" stroke="none"/><path d="M6.8 18.4c.6-2.6 2.6-3.9 5.2-3.9s4.6 1.3 5.2 3.9" fill="currentColor" stroke="none"/></svg>',
+    video: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6.5" width="13" height="11" rx="2.6"/><path d="M16 11l5-3v8l-5-3z"/></svg>',
+    cam: '<svg viewBox="0 0 28 24" width="28" height="24" fill="#fff"><path fill-rule="evenodd" d="M9.5 2.3c.4-.8 1.200-1.300 2.100-1.300h4.800c.9 0 1.700.5 2.100 1.300L19.300 4H23a4 4 0 0 1 4 4v10.500a4 4 0 0 1-4 4H5a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h3.700l.8-1.700zM14 18.200a5.200 5.200 0 1 0 0-10.400 5.200 5.200 0 0 0 0 10.400zm0-2.600a2.600 2.600 0 1 1 0-5.200 2.600 2.600 0 0 1 0 5.200zM23.200 8.300a1.200 1.200 0 1 0 0-2.400 1.200 1.200 0 0 0 0 2.400z"/></svg>'
+  };
   reg({
-    id: 'photobooth', name: 'Photo Booth', icon: () => Icons.photobooth(), w: 700, h: 560, minW: 420, cls: 'dark', title: 'Photo Booth',
+    id: 'photobooth', name: 'Photo Booth', icon: () => Icons.photobooth(), w: 725, h: 600, minW: 460, cls: 'pb-win', title: 'Photo Booth',
     build(win) {
       const video = h('video', { autoplay: '', playsinline: '' }); video.muted = true;
       const msg = h('div', { class: 'pb-msg' }, 'Starting camera…');
       const count = h('div', { class: 'pb-count' });
       const flash = h('div', { class: 'pb-flash' });
-      const stage = h('div', { class: 'pb-stage' }, video, msg, count, flash);
-      const strip = h('div', { class: 'pb-strip' });
-      let stream = null, busy = false;
-      const shutter = h('button', { class: 'pb-shutter', title: 'Take photo', 'aria-label': 'Take photo', onclick: snap }, h('span'));
-      win.body.append(h('div', { class: 'pb' }, stage, h('div', { class: 'pb-bar' }, strip, shutter, h('div', { class: 'pb-spacer' }))));
+      const review = h('div', { class: 'pb-review' }); review.hidden = true;
+      const stage = h('div', { class: 'pb-stage' }, video, msg, count, flash, review);
+      let stream = null, busy = false, mode = 'photo';
+      const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-      function renderStrip() {
-        strip.innerHTML = '';
-        State.shots.slice(0, 6).forEach((u, i) => strip.append(h('button', { class: 'pb-thumb', onclick: () => lightbox(win.body, State.shots, i, 'photobooth') }, h('img', { src: u, alt: '' }))));
-      }
-      State.on('shots', renderStrip); renderStrip();
+      const segs = {};
+      const seg = (m, title, off) => (segs[m] = h('button', {
+        class: 'pb-seg' + (m === mode ? ' on' : ''), title: off ? title + ' (coming soon)' : title, 'aria-label': title, disabled: off ? 'true' : false,
+        html: PB_ICONS[m], onclick: () => { mode = m; Object.keys(segs).forEach(k => segs[k].classList.toggle('on', k === m)); }
+      }));
+      const shutter = h('button', { class: 'pb-shutter', title: 'Take photo', 'aria-label': 'Take photo', html: PB_ICONS.cam, onclick: snap });
+      win.body.append(h('div', { class: 'pb' }, stage,
+        h('div', { class: 'pb-bar' },
+          h('div', { class: 'pb-segs' }, seg('four', 'Take four quick photos'), seg('photo', 'Take a still photo'), seg('video', 'Record a movie clip', true)),
+          shutter, h('div', { class: 'pb-spacer' }))));
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         msg.textContent = 'Camera is not available here (it needs https or localhost).';
@@ -179,19 +189,50 @@
           .then(s => { if (win.closed) { s.getTracks().forEach(t => t.stop()); return; } stream = s; video.srcObject = s; msg.remove(); })
           .catch(() => { msg.textContent = 'Camera access was blocked. Allow it in your browser, then reopen Photo Booth.'; });
       }
-      win.onClose = () => { win.closed = true; State.off('shots', renderStrip); if (stream) stream.getTracks().forEach(t => t.stop()); };
+      win.onClose = () => { win.closed = true; if (stream) stream.getTracks().forEach(t => t.stop()); };
 
-      async function snap() {
-        if (!stream || busy) return;
-        busy = true;
-        for (const n of [3, 2, 1]) { count.textContent = n; count.classList.remove('pop'); void count.offsetWidth; count.classList.add('pop'); await new Promise(r => setTimeout(r, 850)); }
-        count.textContent = ''; count.classList.remove('pop');
+      function grab() {
         const c = document.createElement('canvas');
         c.width = video.videoWidth || 1280; c.height = video.videoHeight || 720;
         const x = c.getContext('2d'); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(video, 0, 0, c.width, c.height);
-        State.shots.unshift(c.toDataURL('image/jpeg', 0.92));
-        flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
-        State.emit('shots'); busy = false;
+        return c;
+      }
+      function collage(frames) {
+        const w = frames[0].width, hh = frames[0].height, c = document.createElement('canvas');
+        c.width = w; c.height = hh;
+        const x = c.getContext('2d');
+        frames.forEach((f, i) => x.drawImage(f, (i % 2) * w / 2, (i >> 1) * hh / 2, w / 2, hh / 2));
+        return c;
+      }
+      const fire = () => { flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); };
+
+      async function snap() {
+        if (!stream || busy) return;
+        busy = true; shutter.disabled = true;
+        for (const n of [3, 2, 1]) { count.textContent = n; count.classList.remove('pop'); void count.offsetWidth; count.classList.add('pop'); await sleep(850); }
+        count.textContent = ''; count.classList.remove('pop');
+        const frames = [], n = mode === 'four' ? 4 : 1;
+        for (let i = 0; i < n; i++) { frames.push(grab()); fire(); if (i < n - 1) await sleep(900); }
+        const url = (n === 1 ? frames[0] : collage(frames)).toDataURL('image/jpeg', 0.9);
+        busy = false; shutter.disabled = false;
+        ask(url);
+      }
+
+      // "Save or not?" prompt
+      function ask(url) {
+        review.innerHTML = '';
+        const note = h('div', { class: 'pb-note' }, PhotoStore.remote ? 'Save this photo? Once approved it will be shown to everyone in Photos.' : 'Save this photo?');
+        const discard = h('button', { class: 'pb-btn', onclick: () => { review.hidden = true; } }, 'Discard');
+        const save = h('button', { class: 'pb-btn primary', onclick: async () => {
+          save.disabled = discard.disabled = true; save.textContent = 'Saving…';
+          try {
+            const rec = await PhotoStore.add(url);
+            if (!rec.pending) { State.saved.unshift(rec); State.emit('shots'); }
+            note.textContent = rec.pending ? 'Thanks! It will appear in Photos once it is approved.' : 'Saved to Photos'; save.remove(); discard.textContent = 'Done'; discard.disabled = false;
+          } catch (e) { note.textContent = 'Could not save'; save.textContent = 'Save'; save.disabled = discard.disabled = false; }
+        } }, 'Save');
+        review.append(h('img', { src: url, alt: '' }), h('div', { class: 'pb-ask' }, note, h('div', { class: 'pb-btns' }, discard, save)));
+        review.hidden = false;
       }
     }
   });
@@ -248,7 +289,7 @@
     build(win) {
       const grid = h('div', { class: 'ph-grid' });
       const draw = () => {
-        const all = State.shots.concat(CONTENT.photos);
+        const all = State.saved.map(r => r.url).concat(CONTENT.photos);
         grid.innerHTML = '';
         if (!all.length) grid.append(h('div', { class: 'ph-empty' }, 'No photos yet'));
         all.forEach((u, i) => grid.append(h('button', { class: 'ph-cell', onclick: () => lightbox(win.body, all, i, 'photo') }, h('img', { src: u, alt: '', loading: 'lazy' }))));
@@ -256,6 +297,95 @@
       State.on('shots', draw); draw();
       win.onClose = () => State.off('shots', draw);
       win.body.append(h('div', { class: 'ph' }, grid));
+    }
+  });
+
+
+  /* ---------- Contacts ---------- */
+  reg({
+    id: 'contacts', name: 'Contacts', icon: () => Icons.contacts(), w: 980, h: 640, minW: 600, minH: 380, cls: 'dark ct-win', title: '',
+    build(win) {
+      const data = CONTENT.contacts.map((c, i) => ({ id: i + 1, ...c, fields: c.fields.map(f => ({ ...f })) }));
+      let seq = data.length, sel = data[0] || null, q = '', editing = false;
+
+      const fullName = c => [c.first, c.last].filter(Boolean).join(' ');
+      const initials = c => ((c.first || '').charAt(0) + (c.last || '').charAt(0)).toUpperCase() || '?';
+      const sortKey = c => ((c.last || c.first || '').toLowerCase());
+
+      const list = h('div', { class: 'ct-list' });
+      const scroll = h('div', { class: 'ct-scroll' });
+      const detail = h('div', { class: 'ct-detail' }, h('div', { class: 'ct-poster' }), scroll);
+      const root = h('div', { class: 'ct' }, list, detail);
+
+      // toolbar (lives in the title bar, like the real app)
+      const tb = win.el.querySelector('.titlebar');
+      const sideBtn = h('button', { class: 'tb-btn ct-round', title: 'Show / hide the list', 'aria-label': 'Toggle list', html: '<svg viewBox="0 0 24 20" width="20" height="17" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="2" width="20" height="16" rx="3.5"/><path d="M9 2v16"/><path d="M4.6 6.2h2.2M4.6 9h2.2" stroke-linecap="round"/></svg>', onclick: () => root.classList.toggle('no-list') });
+      tb.insertBefore(sideBtn, win.titleEl);
+      const search = h('input', { class: 'ct-search', placeholder: 'Search', spellcheck: 'false', oninput: e => { q = e.target.value.toLowerCase(); renderList(); } });
+      const editBtn = h('button', { class: 'tb-btn ct-pill txt', onclick: () => { editing = !editing; renderDetail(); } }, 'Edit');
+      const addBtn = h('button', { class: 'tb-btn ct-round', title: 'New contact', 'aria-label': 'New contact', html: '<svg viewBox="0 0 20 20" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 3v14M3 10h14"/></svg>', onclick: () => {
+        const c = { id: ++seq, first: '', last: '', fields: [{ label: 'mobile', value: '' }, { label: 'email', value: '' }, { label: 'home', value: '', multiline: true }] };
+        data.push(c); sel = c; q = ''; search.value = ''; editing = true; renderList(); renderDetail();
+      } }, '');
+      const sbox = h('label', { class: 'ct-sbox', html: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>' }, search);
+      win.right.append(editBtn, addBtn, sbox);
+
+      function matches(c) {
+        if (!q) return true;
+        return (fullName(c) + ' ' + (c.nickname || '') + ' ' + c.fields.map(f => f.value).join(' ')).toLowerCase().includes(q);
+      }
+
+      function renderList() {
+        list.innerHTML = '';
+        const items = data.filter(matches).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+        if (!items.length) { list.append(h('div', { class: 'ct-none' }, 'No Results')); return; }
+        let letter = null;
+        items.forEach(c => {
+          const l = (sortKey(c).charAt(0) || '#').toUpperCase();
+          if (l !== letter) { letter = l; list.append(h('div', { class: 'ct-letter' }, l)); }
+          list.append(h('button', { class: 'ct-row' + (c === sel ? ' on' : ''), onclick: () => { sel = c; editing = false; renderList(); renderDetail(); } },
+            h('span', { class: 'ct-av' }, initials(c)),
+            h('span', { class: 'ct-nm' }, h('b', null, fullName(c) || 'New Contact'), c.org ? h('small', null, c.org) : null)));
+        });
+      }
+
+      function field(c, f) {
+        const lab = h('div', { class: 'ct-lab' }, f.label);
+        if (editing) {
+          const inp = f.multiline ? h('textarea', { class: 'ct-in', rows: Math.max(2, f.value.split('\n').length) }) : h('input', { class: 'ct-in' });
+          inp.value = f.value; inp.addEventListener('input', () => { f.value = inp.value; });
+          return h('div', { class: 'ct-field' }, lab, inp);
+        }
+        if (!f.value) return null;
+        const val = f.link ? h('a', { class: 'ct-val', href: f.link }, f.value) : h('div', { class: 'ct-val' }, f.value);
+        return h('div', { class: 'ct-field' }, lab, val);
+      }
+
+      function renderDetail() {
+        editBtn.textContent = editing ? 'Done' : 'Edit';
+        scroll.innerHTML = '';
+        if (!sel) { scroll.append(h('div', { class: 'ct-empty' }, 'No Contact Selected')); return; }
+        const c = sel;
+        const sub = [c.nickname && c.nickname.toUpperCase(), c.pronouns && c.pronouns.toUpperCase()].filter(Boolean).join(' · ');
+        if (editing) {
+          const mk = (k, ph) => { const i = h('input', { class: 'ct-in big', placeholder: ph }); i.value = c[k] || ''; i.addEventListener('input', () => { c[k] = i.value; renderList(); }); return i; };
+          scroll.append(h('div', { class: 'ct-head edit' }, mk('first', 'First name'), mk('last', 'Last name'), mk('nickname', 'Nickname')));
+        } else {
+          scroll.append(h('div', { class: 'ct-head' }, sub ? h('div', { class: 'ct-sub' }, sub) : null, h('h1', null, c.posterName || fullName(c) || 'New Contact')));
+        }
+        if (!editing) {
+          scroll.append(h('div', { class: 'ct-card ct-share' },
+            h('span', { class: 'ct-shav', html: '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#e9e9ee"/><circle cx="16" cy="13" r="5" fill="none" stroke="#555a66" stroke-width="1.6"/><path d="M6.5 26c1.4-4.6 5.200-6.800 9.500-6.800s8.100 2.200 9.500 6.800" fill="none" stroke="#555a66" stroke-width="1.6" stroke-linecap="round"/></svg>' }),
+            h('span', { class: 'ct-sh' }, h('b', null, 'Share Name and Photo'), h('small', null, 'Sharing: No')),
+            h('span', { class: 'ct-chev', html: '<svg viewBox="0 0 8 14" width="8" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l6 6-6 6"/></svg>' })));
+        }
+        const rows = c.fields.map(f => field(c, f)).filter(Boolean);
+        if (rows.length) scroll.append(h('div', { class: 'ct-card' }, rows));
+        scroll.scrollTop = 0;
+      }
+
+      win.body.append(root);
+      renderList(); renderDetail();
     }
   });
 

@@ -26,6 +26,7 @@
     terminal() { return img('terminal'); },
     photobooth() { return img('photobooth'); },
     notes() { return img('notes'); },
+    contacts() { return img('contacts'); },
     spotify() { return img('spotify'); },
     photos() { return img('photos'); },
     calendar(date) {
@@ -57,9 +58,9 @@
 
     /* ----- small UI glyphs ----- */
     apple() { return mask('apple', 13, 15); },
-    wifi() { return mask('wifi', 20, 12); },
-    search() { return mask('search', 16, 16); },
-    control() { return mask('control-center', 19, 13); },
+    wifi() { return mask('wifi', 34.5, 20); },
+    search() { return mask('search', 34, 24); },
+    control() { return mask('control-center', 31.15, 21.41); },
     battery() {
       return `<svg viewBox="0 0 28 14" width="25" height="13" fill="none"><rect x=".7" y=".7" width="22.6" height="12.6" rx="3.6" stroke="currentColor" opacity=".55" stroke-width="1.2"/><rect x="2.4" y="2.4" width="16" height="9.2" rx="2.2" fill="currentColor"/><path d="M25 4.7v4.6" stroke="currentColor" opacity=".55" stroke-width="1.6" stroke-linecap="round"/></svg>`;
     }

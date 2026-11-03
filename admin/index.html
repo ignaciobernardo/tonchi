@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Photo approvals</title>
+<style>
+  :root { --bg:#fbfbfc; --ink:#2f3140; --line:rgba(0,0,0,.1); }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; background: var(--bg); color: var(--ink); padding: 32px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 4px; } h2 { font-size: 16px; margin: 28px 0 10px; }
+  p.sub { color: #777a86; margin-bottom: 20px; }
+  form { display: grid; gap: 10px; max-width: 320px; }
+  input { height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+  button { height: 34px; padding: 0 16px; border: 0; border-radius: 9px; font: inherit; font-weight: 500; cursor: pointer; background: #e9e9ee; }
+  button.ok { background: #0a74ff; color: #fff; } button.no { background: #ffe3e1; color: #c0201a; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
+  .card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: #eee; }
+  .card .row { display: flex; gap: 8px; padding: 10px; } .card .row button { flex: 1; }
+  .card small { display: block; padding: 8px 10px 0; color: #8d90a0; }
+  #msg { color: #c0201a; min-height: 22px; margin-top: 8px; }
+  .top { display: flex; justify-content: space-between; align-items: end; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="top"><div><h1>Photo approvals</h1><p class="sub">Photos from Photo Booth wait here until you approve them.</p></div><button id="out" hidden>Log out</button></div>
+
+<form id="login" hidden>
+  <input id="email" type="email" placeholder="Email" autocomplete="username" required>
+  <input id="pass" type="password" placeholder="Password" autocomplete="current-password" required>
+  <button class="ok" type="submit">Log in</button>
+</form>
+<p id="msg"></p>
+
+<section id="panel" hidden>
+  <h2>Waiting for approval <span id="nPending"></span></h2>
+  <div class="grid" id="pending"></div>
+  <h2>Approved (visible to everyone) <span id="nApproved"></span></h2>
+  <div class="grid" id="approved"></div>
+</section>
+
+<script src="../js/config.js"></script>
+<script>
+(function () {
+  const B = window.BACKEND || {}, $ = s => document.querySelector(s);
+  const msg = t => { $('#msg').textContent = t || ''; };
+  if (!B.supabaseUrl || !B.supabaseAnonKey) { msg('Backend not configured yet. Fill in js/config.js (see backend/README.md).'); return; }
+  let token = sessionStorage.getItem('adm_token');
+  const H = () => ({ apikey: B.supabaseAnonKey, Authorization: 'Bearer ' + (token || B.supabaseAnonKey), 'Content-Type': 'application/json' });
+  const api = (path, opt) => fetch(B.supabaseUrl + path, Object.assign({ headers: H() }, opt));
+
+  $('#login').addEventListener('submit', async e => {
+    e.preventDefault(); msg('');
+    const r = await fetch(B.supabaseUrl + '/auth/v1/token?grant_type=password', {
+      method: 'POST', headers: { apikey: B.supabaseAnonKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: $('#email').value, password: $('#pass').value })
+    });
+    if (!r.ok) { msg('Wrong email or password.'); return; }
+    token = (await r.json()).access_token; sessionStorage.setItem('adm_token', token); show();
+  });
+  $('#out').addEventListener('click', () => { sessionStorage.removeItem('adm_token'); token = null; location.reload(); });
+
+  function card(p, approved) {
+    const el = document.createElement('div'); el.className = 'card';
+    el.innerHTML = '<img alt=""><small></small><div class="row"></div>';
+    el.querySelector('img').src = p.image;
+    el.querySelector('small').textContent = new Date(p.created_at).toLocaleString();
+    const row = el.querySelector('.row');
+    if (!approved) {
+      const ok = Object.assign(document.createElement('button'), { className: 'ok', textContent: 'Approve' });
+      ok.onclick = async () => { ok.disabled = true; await api('/rest/v1/photos?id=eq.' + p.id, { method: 'PATCH', body: JSON.stringify({ status: 'approved' }) }); load(); };
+      row.append(ok);
+    }
+    const no = Object.assign(document.createElement('button'), { className: 'no', textContent: approved ? 'Remove' : 'Reject' });
+    no.onclick = async () => { if (!confirm(approved ? 'Remove this photo?' : 'Reject and delete this photo?')) return; await api('/rest/v1/photos?id=eq.' + p.id, { method: 'DELETE' }); load(); };
+    row.append(no);
+    return el;
+  }
+  async function load() {
+    const r = await api('/rest/v1/photos?select=*&order=created_at.desc');
+    if (r.status === 401) { sessionStorage.removeItem('adm_token'); token = null; return show(); }
+    if (!r.ok) { msg('Could not load photos.'); return; }
+    const all = await r.json(), pend = all.filter(p => p.status === 'pending'), appr = all.filter(p => p.status === 'approved');
+    $('#pending').replaceChildren(...pend.map(p => card(p, false))); $('#approved').replaceChildren(...appr.map(p => card(p, true)));
+    $('#nPending').textContent = '(' + pend.length + ')'; $('#nApproved').textContent = '(' + appr.length + ')';
+  }
+  function show() {
+    const on = !!token;
+    $('#login').hidden = on; $('#panel').hidden = !on; $('#out').hidden = !on;
+    if (on) load();
+  }
+  show();
+})();
+</script>
+</body>
+</html>
