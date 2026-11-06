@@ -30,6 +30,8 @@
   .pc { background:#fffdf7; padding:9px; border-radius:2px; box-shadow:0 1px 1px rgba(0,0,0,.18), 0 6px 18px rgba(0,0,0,.14); }
   .pic { width:100%; height:calc(var(--ch) - 18px); background:linear-gradient(160deg,#e9e9e9,#cfcfcf); }
   .pic img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; -webkit-user-drag:none; }
+  .pic.full { height:auto; }
+  .pic.full img { height:auto; object-fit:initial; }
   .card[data-href] .pc { cursor:pointer; }
   .card:nth-child(odd) .pic { background:linear-gradient(160deg,#ececec,#d6d6d6); }
 
@@ -106,11 +108,11 @@
 <div class="featured" aria-label="Destacados">
   <div class="head">Featured</div>
   <div class="stage" id="stage">
-      <div class="card" data-href="snapshots/ya-sub35-full.jpg"><span class="cap">FEATURED 01<br>Revista Ya · Sub35</span><div class="pc"><div class="pic"><img src="snapshots/ya-sub35.jpg" alt="Revista Ya · Sub35" draggable="false"></div></div></div>
-      <div class="card" data-href="snapshots/df-print-full.jpg"><span class="cap">FEATURED 02<br>Diario Financiero · DF Lab</span><div class="pc"><div class="pic"><img src="snapshots/df-print.jpg" alt="Diario Financiero · DF Lab" draggable="false"></div></div></div>
-      <div class="card" data-href="https://www.lun.com/Pages/NewsDetail.aspx?dt=2022-11-17&amp;SupplementId=0&amp;BodyID=0&amp;PaginaId=10&amp;r=w"><span class="cap">FEATURED 03<br>Las Últimas Noticias</span><div class="pc"><div class="pic"><img src="snapshots/lun-2022-11-17.jpg" alt="Las Últimas Noticias" draggable="false"></div></div></div>
-      <div class="card" data-href="https://www.youtube.com/watch?v=_YtIpXvLUzk"><span class="cap">FEATURED 04<br>Hackatón del Futuro · Final</span><div class="pc"><div class="pic"><img src="snapshots/hackaton-foto.jpg" alt="Hackatón del Futuro · Final" draggable="false"></div></div></div>
-      <div class="card" data-href="snapshots/mercurio-portada-full.jpg"><span class="cap">FEATURED 05<br>El Mercurio · Portada</span><div class="pc"><div class="pic"><img src="snapshots/mercurio-portada.jpg" alt="El Mercurio · Portada" draggable="false"></div></div></div>
+      <div class="card" data-href="snapshots/ya-sub35-full.jpg"><span class="cap">Revista Ya · Sub35</span><div class="pc"><div class="pic"><img src="snapshots/ya-sub35.jpg" alt="Revista Ya · Sub35" draggable="false"></div></div></div>
+      <div class="card" data-href="snapshots/df-print-full.jpg"><span class="cap">Diario Financiero · DF Lab</span><div class="pc"><div class="pic"><img src="snapshots/df-print.jpg" alt="Diario Financiero · DF Lab" draggable="false"></div></div></div>
+      <div class="card" data-href="https://www.lun.com/Pages/NewsDetail.aspx?dt=2022-11-17&amp;SupplementId=0&amp;BodyID=0&amp;PaginaId=10&amp;r=w"><span class="cap">Las Últimas Noticias</span><div class="pc"><div class="pic"><img src="snapshots/lun-2022-11-17.jpg" alt="Las Últimas Noticias" draggable="false"></div></div></div>
+      <div class="card" data-href="https://www.youtube.com/watch?v=_YtIpXvLUzk"><span class="cap">Hackatón del Futuro · Final</span><div class="pc"><div class="pic full"><img src="snapshots/hackaton-foto.jpg" alt="Hackatón del Futuro · Final" draggable="false"></div></div></div>
+      <div class="card" data-href="snapshots/mercurio-portada-full.jpg"><span class="cap">El Mercurio · Portada</span><div class="pc"><div class="pic"><img src="snapshots/mercurio-portada.jpg" alt="El Mercurio · Portada" draggable="false"></div></div></div>
   </div>
 </div>
 
