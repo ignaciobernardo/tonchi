@@ -76,12 +76,15 @@ Resumen por año (entradas): 2021 (1) · 2022 (7) · 2023 (6) · 2024 (5, la de 
   No encontré versión web; solo existe como imagen (capturas tuyas, no hay una resolución mayor disponible):
   - [imagenes/2024-03-05_RevistaYa_El-Mercurio_pag18_8-nuevas-lideres.png](imagenes/2024-03-05_RevistaYa_El-Mercurio_pag18_8-nuevas-lideres.png) — pág. 18, 1170×1480
   - [imagenes/2024-03-05_RevistaYa_El-Mercurio_portada_nuevas-lideres.png](imagenes/2024-03-05_RevistaYa_El-Mercurio_portada_nuevas-lideres.png) — portada de El Mercurio con el destacado de Ya, 1170×1452
+- 2024-03-25 · Diario Financiero (DF Lab), edición impresa, pág. 27, sección «Pionera» — misma nota que la web, por Anaís Persson. Solo existe como imagen (destacado #2 del carrusel): [imagenes/2024-03-25_DF_impreso_pag27.jpeg](imagenes/2024-03-25_DF_impreso_pag27.jpeg) — 1170×1567
 - 2024-03-24 · Diario Financiero (DF Lab) — «Trinidad Matta, la divulgadora científica más joven en exponer en Congreso Futuro»
   (la propia nota dice «Publicado: domingo 24 de marzo de 2024»; la charla fue en 2023)
   https://www.df.cl/df-lab/innovacion-y-startups/trinidad-matta-la-divulgadora-cientifica-mas-joven-en-exponer-en
 
 ### TV
 
+- 2024-11-22 · TVN — «Este sábado es la gran final de la "Hackatón del futuro, el reto es hoy"» (figura con Nicolás Salinas como ganadora de su capítulo)
+  https://www.tvn.cl/programas/hackaton-del-futuro/noticias/este-sabado-es-la-gran-final-de-la-hackaton-del-futuro-el-reto-es-hoy
 - 2024-10-02 · TVN — «"Hackatón del Futuro", el nuevo programa de competencias que estrena TVN» (la menciona como participante)
   https://www.tvn.cl/programas/hackaton-del-futuro/noticias/hackaton-del-futuro-el-nuevo-programa-de-competencias-que-estrena-tvn
 
@@ -104,6 +107,8 @@ Resumen por año (entradas): 2021 (1) · 2022 (7) · 2023 (6) · 2024 (5, la de 
 
 ### TV
 
+- 2025-01-20 · YouTube, canal La Ventana Cine — «HACKATÓN DEL FUTURO C5: La gran final ¿Quién llegará a la Cumbre del Futuro en Nueva York?» (46 min; la descripción la nombra; destacado #4)
+  https://www.youtube.com/watch?v=_YtIpXvLUzk
 - 2025-01-20 · YouTube, canal La Ventana Cine — «HACKATÓN DEL FUTURO C3: ¿Cómo integrar a las personas mayores en las ciudades del futuro?» (59 min; la descripción la nombra junto a Merwin Méndez, Sofía Lillo y Nicolás Salinas)
   https://www.youtube.com/watch?v=N8d9qmr88DA
 
@@ -162,6 +167,7 @@ Resumen por año (entradas): 2021 (1) · 2022 (7) · 2023 (6) · 2024 (5, la de 
 - **Revista Ya (2024-03-05)**: no encontré versión web ni PDF; solo tus dos capturas.
 - **Facebook de La Tercera / TVN** con notas sobre ella: son redes sociales de terceros que solo replican lo ya listado; no las incluí.
 - Revisé y **descarté** por no mencionarla: Radio Agricultura (Hackatón), Chilevisión (nominados KCA, dice "Trinidad Marta"), 13.cl (parrilla Congreso Futuro) y dos videos de Todo Vale / Turno que salían en búsquedas.
-- **https://youtu.be/_YtIpXvLUz** (pasado por el usuario): el ID tiene 10 caracteres y YouTube exige 11, así que responde "Bad Request"; probablemente falta una letra al final. No agregado.
+- El link `_YtIpXvLUz` venía cortado; con el ID completo (`_YtIpXvLUzk`) es la final de Hackatón del Futuro y ya está agregado.
+- La foto de Instagram pedida para ese destacado (post de Camila Beltrán) es de otra persona, así que no se usó; la tarjeta usa la miniatura del video.
 - `https://youtu.be/-7VgNIcVh4M` ya estaba (charla en Congreso Futuro 2023).
 - La búsqueda cubre lo que indexan los buscadores; puede faltar prensa y notas en papel sin versión web.
