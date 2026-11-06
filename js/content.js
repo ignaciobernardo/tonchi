@@ -120,6 +120,14 @@ ENGLISH              C2 (full proficiency)
 AWARDS AND RECOGNITION
 ---------------------------------------------------------------------------
 
+2024                 WINNER, “HACKATÓN DEL FUTURO”
+                     National Television (TVN) and UN Chile
+                     - Competed among 16 selected top business and
+                       social entrepreneurs in Chile, solving assigned
+                       problems in a 24-hour televised challenge.
+                     - Won my episode and then the final, as the
+                       youngest participant.
+
 2024                 “OUR WORLD LEADERS”
                      Kid’s Choice awards Mexico, Nickelodeon
 
