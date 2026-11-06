@@ -9,7 +9,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  pages: write
 
 jobs:
   merge:
@@ -24,7 +23,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
           gh pr merge "$PR" --repo "$REPO" --merge
-          # los merges hechos con GITHUB_TOKEN no siempre disparan el build de Pages
-          gh api -X POST "repos/$REPO/pages/builds" || true
+          # el merge solo ya dispara el build de Pages; aquí solo se limpia la rama
+          if [ "$SAME_REPO" = true ]; then
+            gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH" || true
+          fi
