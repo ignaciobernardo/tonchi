@@ -427,6 +427,12 @@
   /* ---------- TextEdit (CV.txt) – opened from the desktop file ---------- */
   reg({
     id: 'cv', name: 'TextEdit', icon: () => Icons.txt(), hidden: true, w: 660, h: 560, minW: 360, cls: 'paper', title: 'CV.txt',
-    build(win) { win.body.append(h('pre', { class: 'txt' }, CONTENT.cv)); }
+    build(win) {
+      const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const html = esc(CONTENT.cv)
+        .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+        .replace(/([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g, '<a href="mailto:$1">$1</a>');
+      win.body.append(h('pre', { class: 'txt', html }));
+    }
   });
 })();

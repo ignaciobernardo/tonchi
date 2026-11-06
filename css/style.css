@@ -215,6 +215,7 @@ body.on-desktop #hint { display: none; }
 
 /* ====================================================== APP: TextEdit / CV.txt */
 .win.paper { background: rgba(255, 255, 255, .96); }
+.txt a { color: #0a58c8; text-decoration: underline; text-underline-offset: 2px; }
 .txt { height: 100%; overflow: auto; padding: 8px 28px 32px; font-family: var(--mono); font-size: 13px; line-height: 1.6; white-space: pre-wrap; color: #24262f; }
 
 /* ====================================================== APP: Firefox */
