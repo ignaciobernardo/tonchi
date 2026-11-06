@@ -16,7 +16,7 @@ jobs:
     if: >-
       github.event.pull_request.base.ref == 'main' &&
       !github.event.pull_request.draft &&
-      contains(fromJSON('["tonchimatta","ignaciobernardo"]'), github.event.pull_request.user.login)
+      github.event.pull_request.user.login == 'tonchimatta'
     runs-on: ubuntu-latest
     steps:
       - name: Merge
