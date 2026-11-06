@@ -6,7 +6,7 @@
 <title>tonchimatta/projects</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=Courier+Prime:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Courier+Prime:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="projects.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
   </button>
 
   <main class="contents">
-    <h1>Contents</h1>
+    <h1>Projects</h1>
     <ul class="toc" id="toc"></ul>
   </main>
   <div class="keys">&uarr; &darr; select &nbsp;&middot;&nbsp; enter open</div>
@@ -40,8 +40,8 @@
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.href = 'project.html?p=' + p.slug;
-      a.style.setProperty('--i', ramp[i % ramp.length]);
-      a.innerHTML = '<span class="t"></span><span class="n"></span>';
+      a.innerHTML = '<span class="row"><span class="b"></span><span class="t"></span></span><span class="n"></span>';
+      a.querySelector('.row').style.setProperty('--i', ramp[i % ramp.length]);
       a.querySelector('.t').textContent = p.title;
       a.querySelector('.n').textContent = p.year;
       a.addEventListener('mouseenter', function () { select(i); });
