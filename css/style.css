@@ -220,26 +220,6 @@ body.on-desktop #hint { display: none; }
 .txt a { color: #0a58c8; text-decoration: underline; text-underline-offset: 2px; }
 .txt { height: 100%; overflow: auto; padding: 8px 28px 32px; font-family: var(--mono); font-size: 13px; line-height: 1.6; white-space: pre-wrap; color: #24262f; }
 
-/* ====================================================== APP: Firefox */
-.ff { display: flex; flex-direction: column; height: 100%; background: #f9f9fb; }
-.ff-tabs { padding: 0 12px; display: flex; background: #e8e8ee; }
-.ff-tab { padding: 7px 16px; font-size: 12px; background: #fff; border-radius: 9px 9px 0 0; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.ff-fav { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, #ffbd4f, #ff4f3b, #7542e5); }
-.ff-bar { display: flex; gap: 6px; align-items: center; padding: 8px 12px; background: #fff; border-bottom: 1px solid rgba(0, 0, 0, .08); }
-.ff-nav { width: 30px; height: 30px; border-radius: 8px; font-size: 16px; }
-.ff-nav:not(:disabled):hover { background: rgba(0, 0, 0, .07); }
-.ff-nav:disabled { opacity: .3; cursor: default; }
-.ff-url { flex: 1; height: 32px; padding: 0 14px; border: 0; border-radius: 10px; background: #f0f0f4; font: inherit; font-size: 13px; outline: 0; }
-.ff-url:focus { box-shadow: 0 0 0 2px var(--accent); background: #fff; }
-.ff-page { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 56px 24px; gap: 28px; background: linear-gradient(#f9f9fb, #f0efff); }
-.ff-page h1 { font-weight: 300; font-size: 28px; letter-spacing: -.01em; }
-.ff-search input { width: min(520px, 80vw); height: 44px; border-radius: 22px; border: 1px solid rgba(0, 0, 0, .1); padding: 0 20px; font: inherit; font-size: 14px; outline: 0; background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .05); }
-.ff-search input:focus { box-shadow: 0 0 0 2px var(--accent); }
-.ff-tiles { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
-.ff-tile { width: 96px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: inherit; text-decoration: none; }
-.ff-t-ic { width: 62px; height: 62px; border-radius: 16px; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, .15); transition: transform .15s; }
-.ff-tile:hover .ff-t-ic { transform: translateY(-3px); }
-
 /* ====================================================== APP: Terminal */
 .win.term-win { background: rgba(18, 18, 20, .88); }
 .term { height: 100%; overflow: auto; padding: 4px 16px 16px; font-family: Menlo, 'SF Mono', Consolas, monospace; font-size: 12.5px; line-height: 1.5; color: #e8e8ec; }

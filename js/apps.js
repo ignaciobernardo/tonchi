@@ -64,38 +64,10 @@
   /* ---------- Launchpad (dock-only) ---------- */
   reg({ id: 'launchpad', name: 'Apps', icon: () => Icons.launchpad(), hidden: true, build() { } });
 
-  /* ---------- Firefox ---------- */
+  /* ---------- Firefox (see js/firefox.js) ---------- */
   reg({
-    id: 'firefox', name: 'Firefox', icon: () => Icons.firefox(), w: 900, h: 580, minW: 460,
-    build(win) {
-      win.setTitle('New Tab');
-      const url = h('input', { class: 'ff-url', placeholder: 'Search or enter address', spellcheck: 'false', autocomplete: 'off' });
-      const go = v => {
-        v = (v || '').trim(); if (!v) return;
-        const isUrl = /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/.*)?$/i.test(v);
-        const target = isUrl ? (/^https?:/i.test(v) ? v : 'https://' + v) : 'https://www.google.com/search?q=' + encodeURIComponent(v);
-        window.open(target, '_blank', 'noopener');
-      };
-      url.addEventListener('keydown', e => { if (e.key === 'Enter') { go(url.value); url.value = ''; } });
-      const tile = (label, href, color, glyph) => h('a', { class: 'ff-tile', href, target: '_blank', rel: 'noopener' },
-        h('span', { class: 'ff-t-ic', style: 'background:' + color }, glyph), h('span', null, label));
-      const page = h('div', { class: 'ff-page' },
-        h('h1', null, 'Search or enter address'),
-        h('div', { class: 'ff-search' }, h('input', {
-          placeholder: 'Search the web', spellcheck: 'false',
-          onkeydown: e => { if (e.key === 'Enter') { go(e.target.value); e.target.value = ''; } }
-        })),
-        h('div', { class: 'ff-tiles' },
-          tile('Instagram', CONTENT.links.instagram, 'linear-gradient(135deg,#feda75,#d62976,#4f5bd5)', 'IG'),
-          tile('GitHub', CONTENT.links.github, '#24292f', 'GH'),
-          h('a', { class: 'ff-tile', href: '#', onclick: e => { e.preventDefault(); Files.open('press'); } }, h('span', { class: 'ff-t-ic', style: 'background:#0a74ff' }, '</>'), h('span', null, 'Press')),
-          h('a', { class: 'ff-tile', href: '#', onclick: e => { e.preventDefault(); WM.launch('cv', { title: 'CV.txt' }); } }, h('span', { class: 'ff-t-ic', style: 'background:#8e8e93' }, 'CV'), h('span', null, 'CV'))));
-      win.right.append();
-      win.body.append(h('div', { class: 'ff' },
-        h('div', { class: 'ff-tabs' }, h('div', { class: 'ff-tab' }, h('span', { class: 'ff-fav' }), 'New Tab')),
-        h('div', { class: 'ff-bar' }, h('button', { class: 'ff-nav', disabled: '' }, '←'), h('button', { class: 'ff-nav', disabled: '' }, '→'), h('button', { class: 'ff-nav', onclick: () => { } }, '↻'), url),
-        page));
-    }
+    id: 'firefox', name: 'Firefox', icon: () => Icons.firefox(), w: 980, h: 640, minW: 520, minH: 320, cls: 'ff-win',
+    build(win, opts) { Browser.build(win, opts); }
   });
 
   /* ---------- Terminal ---------- */
