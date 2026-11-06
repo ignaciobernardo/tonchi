@@ -25,6 +25,8 @@ img, svg { display: block; -webkit-user-drag: none; }
   line-height: 1.85; letter-spacing: -.012em; will-change: opacity, transform;
 }
 #homeText p + p { margin-top: 1.6em; }
+#homeText a { color: inherit; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+#homeText a:hover { opacity: .65; }
 #hint {
   position: fixed; right: clamp(24px, 4vw, 64px); bottom: clamp(20px, 3.4vw, 48px);
   font-size: 13px; letter-spacing: .04em; opacity: .7; padding: 8px 4px;
