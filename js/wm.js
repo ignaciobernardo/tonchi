@@ -123,7 +123,7 @@
     el.querySelector('.close').onclick = () => closeWin(w);
     el.querySelector('.min').onclick = () => minimize(w);
     el.querySelector('.max').onclick = () => toggleMax(w);
-    el.querySelector('.titlebar').addEventListener('dblclick', e => { if (!e.target.closest('.lights,.tb-right')) toggleMax(w); });
+    el.querySelector('.titlebar').addEventListener('dblclick', e => { if (!e.target.closest('.lights,.tb-right button,.tb-right input,.tb-right [role=tab]')) toggleMax(w); });
 
     // drag
     const tb = el.querySelector('.titlebar');
@@ -248,7 +248,7 @@
       h('button', { onclick: () => { close(); WM.launch('finder'); } }, 'About This Portfolio'),
       h('hr'),
       h('button', { onclick: () => { close(); window.Flip && Flip.go(0); } }, 'Back to Home'),
-      h('button', { onclick: () => { close(); window.open(CONTENT.links.instagram, '_blank', 'noopener'); } }, 'Instagram…'));
+      h('button', { onclick: () => { close(); Browser.open(CONTENT.links.instagram); } }, 'Instagram…'));
     bar.append(dd);
     const apple = left.querySelector('.mb-apple');
     function close() { dd.hidden = true; apple.classList.remove('open'); }
@@ -267,15 +267,10 @@
       { id: 'instagram', name: 'Instagram', icon: () => Icons.webloc() }
     ],
     open(id) {
-      if (id === 'projects') {
-        // new browser tab; its back arrow closes it and returns here
-        const t = window.open('projects/', '_blank');
-        if (!t) location.href = 'projects/';
-      } else if (id === 'cv') {
-        WM.launch('cv', { title: 'CV.txt' });
-      } else if (id === 'instagram') {
-        window.open(CONTENT.links.instagram, '_blank', 'noopener');
-      }
+      // pages open in a tab of the desktop's own Firefox window
+      if (id === 'projects') Browser.open('https://tonchimatta.com/projects/');
+      else if (id === 'cv') WM.launch('cv', { title: 'CV.txt' });
+      else if (id === 'instagram') Browser.open(CONTENT.links.instagram);
     }
   };
   window.Files = Files;
