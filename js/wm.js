@@ -262,15 +262,15 @@
   /* ------------------------------------------------------------ desktop files */
   const Files = {
     list: [
-      { id: 'projects', name: 'projects.html', icon: () => Icons.html() },
+      { id: 'press', name: 'press', icon: () => Icons.html() },
       { id: 'cv', name: 'CV.txt', icon: () => Icons.txt() },
       { id: 'instagram', name: 'Instagram', icon: () => Icons.webloc() }
     ],
     open(id) {
-      if (id === 'projects') {
+      if (id === 'press') {
         // new browser tab; its back arrow closes it and returns here
-        const t = window.open('projects/', '_blank');
-        if (!t) location.href = 'projects/';
+        const t = window.open('prensa/', '_blank');
+        if (!t) location.href = 'prensa/';
       } else if (id === 'cv') {
         WM.launch('cv', { title: 'CV.txt' });
       } else if (id === 'instagram') {

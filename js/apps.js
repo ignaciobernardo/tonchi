@@ -88,7 +88,7 @@
         h('div', { class: 'ff-tiles' },
           tile('Instagram', CONTENT.links.instagram, 'linear-gradient(135deg,#feda75,#d62976,#4f5bd5)', 'IG'),
           tile('GitHub', CONTENT.links.github, '#24292f', 'GH'),
-          h('a', { class: 'ff-tile', href: '#', onclick: e => { e.preventDefault(); Files.open('projects'); } }, h('span', { class: 'ff-t-ic', style: 'background:#0a74ff' }, '</>'), h('span', null, 'Projects')),
+          h('a', { class: 'ff-tile', href: '#', onclick: e => { e.preventDefault(); Files.open('press'); } }, h('span', { class: 'ff-t-ic', style: 'background:#0a74ff' }, '</>'), h('span', null, 'Press')),
           h('a', { class: 'ff-tile', href: '#', onclick: e => { e.preventDefault(); WM.launch('cv', { title: 'CV.txt' }); } }, h('span', { class: 'ff-t-ic', style: 'background:#8e8e93' }, 'CV'), h('span', null, 'CV'))));
       win.right.append();
       win.body.append(h('div', { class: 'ff' },
@@ -110,10 +110,10 @@
       win.body.append(box);
       const hist = []; let hi = 0;
       const print = (t, c) => { out.append(h('div', { class: 't-row ' + (c || '') }, t)); box.scrollTop = box.scrollHeight; };
-      const files = { 'projects.html': 'projects', 'cv.txt': 'cv', 'instagram.webloc': 'instagram', 'instagram': 'instagram' };
+      const files = { 'press': 'press', 'prensa': 'press', 'cv.txt': 'cv', 'instagram.webloc': 'instagram', 'instagram': 'instagram' };
       const cmds = {
-        help() { print('Available commands:'); print('  ls            list files on the desktop'); print('  cat <file>    print a text file (try: cat CV.txt)'); print('  open <file>   open a file (try: open projects.html)'); print('  whoami        who am I?'); print('  date          current date'); print('  echo <text>   repeat after me'); print('  neofetch      about this machine'); print('  clear         clear the screen'); print('  exit          close this window'); },
-        ls() { print('CV.txt    Instagram.webloc    projects.html'); },
+        help() { print('Available commands:'); print('  ls            list files on the desktop'); print('  cat <file>    print a text file (try: cat CV.txt)'); print('  open <file>   open a file (try: open press)'); print('  whoami        who am I?'); print('  date          current date'); print('  echo <text>   repeat after me'); print('  neofetch      about this machine'); print('  clear         clear the screen'); print('  exit          close this window'); },
+        ls() { print('CV.txt    Instagram.webloc    press'); },
         pwd() { print('/Users/guest/Desktop'); },
         whoami() { print('guest'); },
         date() { print(new Date().toString()); },
