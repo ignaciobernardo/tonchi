@@ -4,6 +4,7 @@
   --soft: rgba(47, 49, 64, .55);
   --serif: 'EB Garamond', 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
   --type: 'Courier Prime', 'Courier New', Courier, monospace;
+  --dm: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --pad: clamp(22px, 4.2vw, 64px);
 }
@@ -22,24 +23,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #back svg { width: 20px; height: 20px; }
 
 /* ================================================== CONTENTS (index) */
-.contents { min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
-  align-items: center; padding: 90px var(--pad) 70px; font-family: var(--serif); }
-.contents h1 { font-weight: 400; font-variant: small-caps; letter-spacing: .06em;
-  font-size: clamp(20px, 2.1vw, 28px); margin-bottom: clamp(34px, 6vh, 64px); }
-.contents h1::first-letter { font-size: 1.18em; }
-.toc { list-style: none; width: min(640px, 100%); font-variant-numeric: oldstyle-nums;
-  font-size: clamp(16px, 1.55vw, 21px); line-height: 1; }
-.toc li { position: relative; }
-.toc a { display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
-  padding: .62em 0; outline: none; }
-.toc .t { padding-left: calc(var(--i, 0) * 1.7em); position: relative; }
-.toc .t::before { content: '\2192'; position: absolute; left: calc(var(--i, 0) * 1.7em - 1.5em);
-  opacity: 0; transition: opacity .12s; }
-.toc .n { font-variant-numeric: oldstyle-nums; }
-.toc a:hover .t, .toc a.sel .t { font-style: italic; }
-.toc a.sel .t::before, .toc a:hover .t::before { opacity: 1; }
-.keys { position: fixed; right: var(--pad); bottom: clamp(18px, 3vw, 40px); font-family: var(--mono);
-  font-size: 12px; letter-spacing: .04em; opacity: .55; }
+.contents { min-height: 100vh; padding: 36px var(--pad) 90px 92px; font-family: var(--dm); font-weight: 300; }
+.contents h1 { font-weight: 300; text-transform: uppercase; letter-spacing: .12em;
+  font-size: clamp(15px, 1.5vw, 20px); margin-bottom: clamp(36px, 7vh, 72px); padding-top: 4px; }
+.toc { list-style: none; width: min(620px, 100%); font-size: clamp(15px, 1.5vw, 20px); line-height: 1; }
+.toc a { display: flex; align-items: baseline; gap: 1ch; padding: .55em 0; outline: none; white-space: pre; }
+.toc .row { display: flex; gap: 1ch; padding-left: calc(var(--i, 0) * 3ch); }
+.toc .b::before { content: '[ ]'; }
+.toc a.sel .b::before, .toc a:hover .b::before { content: '[\25CF]'; }
+.toc .n { margin-left: auto; opacity: .55; }
+.toc a.sel, .toc a:hover { font-weight: 500; }
+.toc a.sel .n, .toc a:hover .n { opacity: 1; }
+.keys { position: fixed; right: var(--pad); bottom: clamp(18px, 3vw, 40px); font-family: var(--dm);
+  font-weight: 300; font-size: 12px; letter-spacing: .06em; opacity: .6; text-transform: uppercase; }
 
 /* ================================================== PROJECT PAGE */
 .page { font-family: var(--type); font-size: clamp(15px, 1.25vw, 18px); line-height: 1.45;
