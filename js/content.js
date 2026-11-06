@@ -49,6 +49,18 @@ Mar 2025 - Mar 2026  UNITED NATIONS
                        contributing to policy design and cross-sector
                        coordination.
 
+May 2023 - now       EDUCATIONAL CONTENT CREATOR
+                     - Research, script, and write short-form educational
+                       content about science, technology, and AI safety.
+                     - 120K+ followers across platforms, 15M+ views.
+
+Mar 2023 - Dec 2024  PONTIFICAL CATHOLIC UNIVERSITY OF CHILE
+                     Teaching Assistant, [Penta UC](https://academiadetalentos.uc.cl/)
+                     - Designed and taught semester-long courses on
+                       neuroscience, artificial intelligence and the mind,
+                       and scientific communication to gifted students from
+                       6th to 12th grade.
+
 Aug 2022 - now       LABORATORY FOR AI, NEURORIGHTS, METAVERSE, AND DIGITAL
                      PLATFORMS, CHILEAN SENATE
                      Founding member
@@ -68,18 +80,6 @@ Feb 2021 - now       FUNDACIÓN TREMENDAS
                      - Authored and defended a digital protection proposal
                        that passed the official citizen consultation
                        mechanism.
-
-May 2023 - now       EDUCATIONAL CONTENT CREATOR
-                     - Research, script, and write short-form educational
-                       content about science, technology, and AI safety.
-                     - 100K+ followers across social platforms.
-
-Mar 2023 - Dec 2024  PONTIFICAL CATHOLIC UNIVERSITY OF CHILE
-                     Teaching Assistant, Penta UC
-                     - Designed and taught semester-long courses on
-                       neuroscience, artificial intelligence and the mind,
-                       and scientific communication to gifted students from
-                       6th to 12th grade.
 
 ---------------------------------------------------------------------------
 CERTIFICATIONS
@@ -106,7 +106,7 @@ SKILLS
 
 Academic writing, interdisciplinary research,
 regulatory mapping, public policy, scientific
-communication, social media content creation (90k+
+communication, social media content creation (120k+
 followers across platforms), public speaking.
 
 ---------------------------------------------------------------------------
@@ -120,14 +120,29 @@ ENGLISH              C2 (full proficiency)
 AWARDS AND RECOGNITION
 ---------------------------------------------------------------------------
 
+2024                 “OUR WORLD LEADERS”
+                     Kid’s Choice awards Mexico, Nickelodeon
+
+2024                 “50 GENIAS DEL AÑO”
+                     [GENIAS](https://genias.cl/pages/50-genias-del-2024)
+
+2024                 CLEVELAND INTERNATIONAL MODEL UNITED NATIONS (CLEIMUN)
+                     Best Delegate, Best Head of Delegation,
+                     Best Delegation
+
 2023                 TOP 5 DEBATERS CHILE
                      World Schools Debating
 
-2024                 “50 GENIAS DEL AÑO”
-                     GENIAS
+2023                 MEMBER OF THE NATIONAL DEBATE TEAM
 
-2024                 “OUR WORLD LEADERS”
-                     Kid’s Choice awards Mexico, Nickelodeon
+2019                 TAEKWONDO PANAMERICAN CHAMPION
+
+2019                 TAEKWONDO PANAMERICAN SUB-CHAMPION
+                     Weapons
+
+                     TAEKWONDO NATIONAL CHAMPION (x4)
+
+                     10+ NATIONAL DEBATING CHAMPIONSHIP AWARDS
 
 ---------------------------------------------------------------------------
 CONTACT

@@ -83,6 +83,8 @@ Resumen por año (entradas): 2021 (1) · 2022 (7) · 2023 (6) · 2024 (5, la de 
 
 ### TV
 
+- 2024-12-05 · TVN — «Ganadores de la Hackatón del Futuro visitaron el "Buenos días a todos"» (visita al matinal con Nicolás Salinas, ganadores de la competencia)
+  https://www.tvn.cl/programas/buenos-dias-a-todos/espectaculos-y-tv/ganadores-de-la-hackaton-del-futuro-visitaron-el-buenos-dias-a-todos
 - 2024-11-22 · TVN — «Este sábado es la gran final de la "Hackatón del futuro, el reto es hoy"» (figura con Nicolás Salinas como ganadora de su capítulo)
   https://www.tvn.cl/programas/hackaton-del-futuro/noticias/este-sabado-es-la-gran-final-de-la-hackaton-del-futuro-el-reto-es-hoy
 - 2024-10-02 · TVN — «"Hackatón del Futuro", el nuevo programa de competencias que estrena TVN» (la menciona como participante)

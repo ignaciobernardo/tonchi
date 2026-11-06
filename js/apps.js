@@ -95,7 +95,7 @@
         cat(a) {
           if (!a[0]) return print('usage: cat <file>');
           const f = files[a[0].toLowerCase()];
-          if (f === 'cv') CONTENT.cv.split('\n').forEach(l => print(l || ' '));
+          if (f === 'cv') CONTENT.cv.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '$1 ($2)').split('\n').forEach(l => print(l || ' '));
           else if (f) print(`cat: ${a[0]}: Is not a text file (try: open ${a[0]})`);
           else print(`cat: ${a[0]}: No such file or directory`);
         },
@@ -401,9 +401,13 @@
     id: 'cv', name: 'TextEdit', icon: () => Icons.txt(), hidden: true, w: 660, h: 560, minW: 360, cls: 'paper', title: 'CV.txt',
     build(win) {
       const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const html = esc(CONTENT.cv)
-        .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
-        .replace(/([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g, '<a href="mailto:$1">$1</a>');
+      // One pass so links never get wrapped twice: [label](url), bare url, or email.
+      const html = esc(CONTENT.cv).replace(
+        /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)|(https?:\/\/[^\s<]+)|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g,
+        (m, label, mdUrl, url, mail) => label
+          ? `<a href="${mdUrl}" target="_blank" rel="noopener">${label}</a>`
+          : url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>`
+          : `<a href="mailto:${mail}">${mail}</a>`);
       win.body.append(h('pre', { class: 'txt', html }));
     }
   });
