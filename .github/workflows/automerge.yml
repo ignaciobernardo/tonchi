@@ -1,0 +1,30 @@
+# Cualquier PR que abra tonchimatta contra main se mergea al tiro.
+# (Sus pushes directos a main ya salen sin aprobación: tiene permiso de escritura.)
+name: auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+
+jobs:
+  merge:
+    if: >-
+      github.event.pull_request.base.ref == 'main' &&
+      !github.event.pull_request.draft &&
+      contains(fromJSON('["tonchimatta","ignaciobernardo"]'), github.event.pull_request.user.login)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr merge "$PR" --repo "$REPO" --merge
+          # los merges hechos con GITHUB_TOKEN no siempre disparan el build de Pages
+          gh api -X POST "repos/$REPO/pages/builds" || true
