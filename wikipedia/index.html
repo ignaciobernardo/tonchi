@@ -191,6 +191,30 @@
     { text: 'Incidente de Đorđe Martinović', href: 'https://es.wikipedia.org/wiki/Incidente_de_Đorđe_Martinović',
       src: 'img/2032.jpg', ar: 428/731,
       strand: 7, wide: { w: 0.090 }, narrow: { w: 0.190, x: 0.700, row: 3 } },
+
+    { text: 'Fenómeno Mariko Aoki.', href: 'https://es.wikipedia.org/wiki/Fen%C3%B3meno_Mariko_Aoki',
+      src: 'img/2034.jpg', ar: 675/900,
+      strand: 11, wide: { w: 0.090 }, narrow: { w: 0.200, x: 0.165, row: 4 } },
+
+    { text: 'Witch window.', href: 'https://es.wikipedia.org/wiki/Witch_window',
+      src: 'img/2036.jpg', ar: 900/626,
+      strand: 12, wide: { w: 0.120 }, narrow: { w: 0.240, x: 0.500, row: 4 } },
+
+    { text: 'Pastel de fanta.', href: 'https://es.wikipedia.org/wiki/Pastel_de_fanta',
+      src: 'img/2038.jpg', ar: 900/479,
+      strand: 13, wide: { w: 0.130 }, narrow: { w: 0.260, x: 0.835, row: 4 } },
+
+    { text: 'Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo.', href: 'https://en.wikipedia.org/wiki/Buffalo_buffalo_Buffalo_buffalo_buffalo_buffalo_Buffalo_buffalo',
+      src: 'img/2040.jpg', ar: 900/600,
+      strand: 14, wide: { w: 0.120 }, narrow: { w: 0.250, x: 0.165, row: 5 } },
+
+    { text: 'Toilet paper orientation.', href: 'https://en.wikipedia.org/wiki/Toilet_paper_orientation',
+      src: 'img/2042.jpg', ar: 900/529,
+      strand: 15, wide: { w: 0.120 }, narrow: { w: 0.250, x: 0.500, row: 5 } },
+
+    { text: 'Rubber duck.', href: 'https://en.wikipedia.org/wiki/Rubber_duck',
+      src: 'img/2044.jpg', ar: 900/675,
+      strand: 16, wide: { w: 0.110 }, narrow: { w: 0.240, x: 0.835, row: 5 } },
   ];
 
   // Where the threads are knotted, as a fraction of girl.png: a point a
@@ -219,7 +243,10 @@
   // the screen, so the girl stays planted on the floor of the page and
   // pulling back opens room above and beside her.
   const MIN_ZOOM = 0.45, MAX_ZOOM = 1;
-  let zoom = 1;
+  // The page opens pulled back a little so the pictures have room between
+  // them. Narrow screens stack their cards and open at full size.
+  const homeZoom = () => (innerWidth <= 860 ? 1 : 0.8);
+  let zoom = homeZoom();
 
   const toWorldX = sx => (sx - W / 2) / zoom + W / 2;
   const toWorldY = sy => (sy - H) / zoom + H;
@@ -293,6 +320,12 @@
     [0,0,7,-3,14,-6,21,-9,28,-12,35,-15,42,-17,49,-20,56,-22,63,-25,70,-28,77,-31,84,-34,91,-37,97,-40,104,-44,110,-48,117,-52,123,-56,128,-61,134,-66,139,-72,144,-77,150,-83,155,-88,160,-93,166,-99,171,-104,176,-109,182,-114,188,-119,194,-124,200,-128,206,-132,212,-137,219,-140,225,-144,232,-147,239,-150,246,-152,253,-155,260,-158,267,-160,274,-163],
     [0,0,-42,15,-83,32,-126,41,-170,35,-213,27,-257,21,-301,16,-345,13,-390,11,-434,11,-478,13,-522,16,-567,21,-610,27,-654,35,-697,44,-740,55,-783,67,-825,81,-867,96,-908,113,-948,132,-988,151,-1027,172,-1065,195,-1102,219,-1139,244,-1174,271,-1208,299,-1241,329,-1273,360,-1304,392,-1333,425,-1361,459,-1388,495,-1413,531,-1436,569,-1458,608,-1478,647,-1500,686,-1521,724,-1542,763,-1564,802],
     [0,0,-28,8,-55,18,-82,27,-110,34,-139,36,-167,32,-196,29,-225,27,-254,25,-282,24,-311,24,-340,25,-369,26,-398,30,-426,34,-454,39,-482,46,-510,54,-537,63,-564,74,-590,87,-615,101,-640,116,-664,132,-687,149,-710,167,-732,185,-754,204,-775,223,-797,242,-818,262,-839,282,-861,301,-882,320,-904,339,-926,357,-949,375,-972,392,-995,409,-1019,426,-1042,443,-1065,460,-1089,477],
+    [0,0,-25,-27,-51,-52,-78,-76,-106,-98,-135,-119,-165,-138,-196,-156,-227,-173,-260,-188,-293,-203,-327,-216,-362,-229,-397,-240,-433,-251,-469,-261,-505,-271,-542,-280,-580,-288,-617,-296,-655,-304,-693,-311,-731,-318,-768,-325,-806,-333,-844,-340,-882,-347,-919,-354,-957,-362,-994,-370,-1030,-378,-1067,-387,-1102,-397,-1138,-407,-1172,-418,-1206,-429,-1240,-442,-1272,-455,-1304,-470,-1335,-485,-1365,-502,-1395,-520,-1423,-539,-1450,-560],
+    [0,0,-23,-6,-45,-13,-67,-22,-88,-31,-109,-41,-130,-52,-150,-64,-170,-77,-189,-91,-209,-105,-227,-120,-246,-135,-264,-152,-283,-168,-301,-185,-318,-203,-336,-220,-353,-238,-371,-257,-388,-275,-405,-294,-422,-313,-439,-331,-456,-350,-473,-369,-490,-388,-507,-406,-524,-424,-541,-442,-558,-460,-576,-477,-593,-494,-611,-511,-628,-527,-646,-542,-665,-557,-683,-571,-702,-585,-721,-598,-740,-610,-760,-621,-780,-631,-800,-640],
+    [0,0,-30,-10,-60,-19,-91,-25,-121,-31,-152,-35,-183,-37,-214,-38,-246,-38,-277,-37,-309,-35,-340,-31,-372,-27,-404,-22,-436,-16,-468,-10,-501,-3,-533,5,-565,13,-598,22,-630,31,-662,40,-695,49,-727,59,-759,68,-791,77,-824,87,-856,96,-888,104,-920,113,-951,121,-983,128,-1015,135,-1046,141,-1077,147,-1109,151,-1140,155,-1170,158,-1201,160,-1231,160,-1261,160,-1291,158,-1321,155,-1350,150],
+    [0,0,-14,4,-28,8,-42,12,-57,14,-71,16,-86,18,-101,19,-116,20,-131,20,-146,20,-161,19,-177,18,-192,17,-208,15,-223,13,-239,11,-255,9,-270,6,-286,4,-302,1,-318,-2,-333,-5,-349,-8,-365,-11,-381,-14,-396,-16,-412,-19,-428,-22,-443,-25,-459,-27,-474,-29,-489,-31,-505,-33,-520,-34,-535,-35,-550,-36,-564,-37,-579,-37,-594,-36,-608,-35,-622,-34,-636,-32,-650,-30],
+    [0,0,-27,-34,-56,-67,-86,-98,-118,-128,-150,-157,-185,-184,-220,-209,-256,-234,-294,-257,-332,-280,-372,-301,-412,-322,-453,-341,-494,-360,-537,-379,-579,-396,-623,-413,-666,-430,-710,-446,-754,-462,-799,-478,-843,-493,-888,-508,-933,-524,-977,-539,-1021,-554,-1065,-570,-1109,-586,-1152,-602,-1195,-618,-1238,-635,-1280,-653,-1321,-671,-1361,-689,-1401,-709,-1439,-729,-1477,-750,-1514,-772,-1550,-796,-1584,-820,-1617,-845,-1649,-872,-1680,-900],
+    [0,0,0,-24,2,-49,4,-73,8,-96,13,-120,19,-143,26,-166,34,-189,43,-212,52,-235,63,-257,74,-279,86,-301,98,-323,111,-345,124,-367,138,-389,152,-410,167,-432,181,-453,196,-474,211,-496,226,-517,241,-538,256,-560,271,-581,286,-602,300,-623,314,-644,328,-666,342,-687,355,-708,367,-730,379,-751,390,-773,401,-795,410,-817,419,-838,428,-860,435,-883,441,-905,446,-927,450,-950],
   ];
   const SEG = STRANDS[0].length / 2 - 1;
 
@@ -503,14 +536,16 @@
     // would be pushed off an edge. Across and down are fitted separately,
     // since a page is rarely the shape the drawing was made on.
     const PAD = 10;
+    // the visible world, which is bigger than the window when zoomed out
+    const vl = W / 2 - W / (2 * zoom), vr = W / 2 + W / (2 * zoom), vt = H - H / zoom;
     let sx = Infinity, sy = Infinity;
     for (const c of cards) {
       const s = STRANDS[c.item.strand];
       const tx = s[s.length - 2], ty = s[s.length - 1];
       const hw = c.w / 2 + PAD, hh = c.h / 2 + PAD;
-      if (tx < 0) sx = Math.min(sx, (head.x - hw) / -tx);
-      else if (tx > 0) sx = Math.min(sx, (W - head.x - hw) / tx);
-      if (ty < 0) sy = Math.min(sy, (head.y - hh) / -ty);
+      if (tx < 0) sx = Math.min(sx, (head.x - vl - hw) / -tx);
+      else if (tx > 0) sx = Math.min(sx, (vr - head.x - hw) / tx);
+      if (ty < 0) sy = Math.min(sy, (head.y - vt - hh) / -ty);
       else if (ty > 0) sy = Math.min(sy, (H - head.y - hh) / ty);
     }
     sx = Math.max(sx, 0.02); sy = Math.max(sy, 0.02);
@@ -580,11 +615,11 @@
     }
   }
 
-  // On a narrow screen the cards stack above the girl in four rows. Row
+  // On a narrow screen the cards stack above the girl in six rows. Row
   // heights are measured rather than assumed, and the whole block shrinks
   // until it fits the space above her head, so nothing ever collides.
   function packNarrow(girlTop) {
-    const ROWS = 4, GAP = Math.max(8, H * 0.012);
+    const ROWS = 6, GAP = Math.max(8, H * 0.012);
     const top = H * 0.018;
     const avail = Math.max(120, girlTop - top - H * 0.02);
     let rowH = [];
@@ -635,7 +670,7 @@
   }
 
   function resetAll() {
-    setZoom(1);
+    setZoom(homeZoom());
     for (const c of cards) { c.fx = c.fy = null; c.el.style.zIndex = ''; c.settleAt = 0; }
     topZ = 10;
     layout(false);
