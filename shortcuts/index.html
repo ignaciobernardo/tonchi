@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>atajos — mac</title>
+<style>
+  :root { --bg:#000; --fg:#e8e8e8; --dim:#7a7a7a; --line:#2a2a2a; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--fg); }
+  body {
+    font: 14px/1.6 "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+    padding: 32px 16px 80px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .top { color:var(--dim); margin-bottom: 4px; }
+  h1 { font-size:14px; font-weight:normal; margin:0 0 24px; }
+  h1::after { content:"█"; animation: blink 1s steps(1) infinite; margin-left:4px; }
+  @keyframes blink { 50% { opacity:0; } }
+  nav { display:flex; flex-wrap:wrap; gap:4px 16px; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:20px; }
+  nav button {
+    font:inherit; color:var(--dim); background:none; border:0; padding:0; cursor:pointer;
+  }
+  nav button:hover { color:var(--fg); }
+  nav button[aria-selected="true"] { color:var(--bg); background:var(--fg); padding:0 6px; }
+  .prompt { display:flex; gap:8px; margin-bottom:20px; color:var(--dim); }
+  .prompt input {
+    flex:1; font:inherit; color:var(--fg); background:none; border:0; outline:0; caret-color:var(--fg);
+  }
+  section { display:none; }
+  section.on { display:block; }
+  h2 { font-size:14px; font-weight:normal; color:var(--dim); margin:24px 0 6px; }
+  h2::before { content:"# "; }
+  ul { list-style:none; margin:0; padding:0; }
+  li { display:grid; grid-template-columns: 220px 1fr; gap:16px; padding:2px 0; }
+  li:hover { background:#111; }
+  kbd { font:inherit; color:#fff; white-space:nowrap; }
+  li span { color:#bdbdbd; }
+  .note { color:var(--dim); margin-top:24px; }
+  .hidden { display:none; }
+  .help-btn {
+    position:fixed; top:16px; right:16px; width:28px; height:28px;
+    font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--fg); cursor:pointer;
+  }
+  .help-btn:hover { background:var(--fg); color:var(--bg); }
+  dialog {
+    font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--fg);
+    padding:20px 24px; max-width:min(420px, calc(100vw - 32px));
+  }
+  dialog::backdrop { background:rgba(0,0,0,.7); }
+  dialog p { margin:0 0 12px; color:var(--dim); }
+  dialog ul li { grid-template-columns: 70px 1fr; }
+  dialog .close { margin-top:16px; font:inherit; color:var(--dim); background:none; border:0; padding:0; cursor:pointer; }
+  dialog .close:hover { color:var(--fg); }
+  @media (max-width:600px) { li { grid-template-columns: 1fr; gap:0; padding:4px 0; } }
+</style>
+</head>
+<body>
+<button class="help-btn" id="help" aria-label="cómo usar">?</button>
+<dialog id="helpbox">
+  <p>$ man atajos</p>
+  <ul>
+    <li><kbd>1 – 5</kbd><span>cambiar de pestaña</span></li>
+    <li><kbd>/</kbd><span>abrir el filtro de búsqueda</span></li>
+    <li><kbd>esc</kbd><span>limpiar el filtro</span></li>
+    <li><kbd>?</kbd><span>abrir / cerrar esta ayuda</span></li>
+  </ul>
+  <p style="margin-top:12px">la página recuerda la última pestaña que abriste.</p>
+  <button class="close" id="helpclose">[ cerrar ]</button>
+</dialog>
+<div class="wrap">
+  <div class="top">Last login: hoy en ttys000</div>
+  <h1>~ $ cat atajos.txt</h1>
+
+  <nav role="tablist">
+    <button data-t="md">[1] markdown</button>
+    <button data-t="obs">[2] obsidian</button>
+    <button data-t="zen">[3] zen</button>
+    <button data-t="mac">[4] macos</button>
+    <button data-t="term">[5] terminal</button>
+  </nav>
+
+  <div class="prompt"><span>grep&gt;</span><input id="q" placeholder="filtrar… (tecla /)" autocomplete="off"></div>
+
+  <!-- 1. MARKDOWN -->
+  <section id="md">
+    <h2>moverse por el texto</h2>
+    <ul>
+      <li><kbd>opt + ← / →</kbd><span>saltar palabra</span></li>
+      <li><kbd>cmd + ← / →</kbd><span>inicio / fin de línea</span></li>
+      <li><kbd>cmd + ↑ / ↓</kbd><span>inicio / fin del documento</span></li>
+      <li><kbd>opt + ↑ / ↓</kbd><span>inicio / fin de párrafo</span></li>
+    </ul>
+    <h2>seleccionar</h2>
+    <ul>
+      <li><kbd>shift + flechas</kbd><span>seleccionar carácter / línea</span></li>
+      <li><kbd>opt + shift + ← / →</kbd><span>seleccionar palabra</span></li>
+      <li><kbd>cmd + shift + ← / →</kbd><span>seleccionar hasta inicio / fin de línea</span></li>
+      <li><kbd>cmd + a</kbd><span>seleccionar todo</span></li>
+      <li><kbd>doble clic / triple clic</kbd><span>seleccionar palabra / párrafo</span></li>
+    </ul>
+    <h2>borrar</h2>
+    <ul>
+      <li><kbd>opt + delete</kbd><span>borrar palabra anterior</span></li>
+      <li><kbd>cmd + delete</kbd><span>borrar hasta inicio de línea</span></li>
+      <li><kbd>fn + delete</kbd><span>borrar hacia adelante</span></li>
+    </ul>
+    <h2>editar</h2>
+    <ul>
+      <li><kbd>cmd + c / x / v</kbd><span>copiar / cortar / pegar</span></li>
+      <li><kbd>cmd + opt + shift + v</kbd><span>pegar sin formato</span></li>
+      <li><kbd>cmd + z</kbd><span>deshacer</span></li>
+      <li><kbd>cmd + shift + z</kbd><span>rehacer</span></li>
+      <li><kbd>cmd + f</kbd><span>buscar</span></li>
+      <li><kbd>cmd + g</kbd><span>siguiente resultado</span></li>
+    </ul>
+    <h2>formato (editores markdown)</h2>
+    <ul>
+      <li><kbd>cmd + b</kbd><span>**negrita**</span></li>
+      <li><kbd>cmd + i</kbd><span>*cursiva*</span></li>
+      <li><kbd>cmd + k</kbd><span>[link](url)</span></li>
+      <li><kbd>tab / shift + tab</kbd><span>indentar / desindentar lista</span></li>
+    </ul>
+    <h2>sintaxis markdown</h2>
+    <ul>
+      <li><kbd># ## ###</kbd><span>títulos nivel 1, 2, 3</span></li>
+      <li><kbd>**texto**</kbd><span>negrita</span></li>
+      <li><kbd>*texto*</kbd><span>cursiva</span></li>
+      <li><kbd>~~texto~~</kbd><span>tachado</span></li>
+      <li><kbd>==texto==</kbd><span>resaltado (obsidian)</span></li>
+      <li><kbd>`código`</kbd><span>código en línea</span></li>
+      <li><kbd>```</kbd><span>bloque de código</span></li>
+      <li><kbd>- item</kbd><span>lista con viñetas</span></li>
+      <li><kbd>1. item</kbd><span>lista numerada</span></li>
+      <li><kbd>- [ ] tarea</kbd><span>checkbox</span></li>
+      <li><kbd>&gt; texto</kbd><span>cita</span></li>
+      <li><kbd>---</kbd><span>línea divisoria</span></li>
+      <li><kbd>[texto](url)</kbd><span>link</span></li>
+      <li><kbd>![alt](img.png)</kbd><span>imagen</span></li>
+      <li><kbd>| a | b |</kbd><span>tabla (fila siguiente: |---|---|)</span></li>
+    </ul>
+  </section>
+
+  <!-- 2. OBSIDIAN -->
+  <section id="obs">
+    <h2>navegar</h2>
+    <ul>
+      <li><kbd>cmd + o</kbd><span>abrir nota rápida (quick switcher)</span></li>
+      <li><kbd>cmd + p</kbd><span>paleta de comandos</span></li>
+      <li><kbd>cmd + shift + f</kbd><span>buscar en todo el vault</span></li>
+      <li><kbd>cmd + f</kbd><span>buscar en la nota</span></li>
+      <li><kbd>cmd + opt + ← / →</kbd><span>atrás / adelante</span></li>
+      <li><kbd>cmd + g</kbd><span>vista de grafo</span></li>
+      <li><kbd>cmd + ,</kbd><span>ajustes</span></li>
+    </ul>
+    <h2>notas y pestañas</h2>
+    <ul>
+      <li><kbd>cmd + n</kbd><span>nueva nota</span></li>
+      <li><kbd>cmd + t</kbd><span>nueva pestaña</span></li>
+      <li><kbd>cmd + w</kbd><span>cerrar pestaña</span></li>
+      <li><kbd>cmd + shift + t</kbd><span>reabrir pestaña cerrada</span></li>
+      <li><kbd>cmd + e</kbd><span>alternar edición / lectura</span></li>
+      <li><kbd>cmd + clic</kbd><span>abrir link en pestaña nueva</span></li>
+      <li><kbd>cmd + enter</kbd><span>seguir link bajo el cursor</span></li>
+    </ul>
+    <h2>editar</h2>
+    <ul>
+      <li><kbd>[[</kbd><span>insertar link interno a otra nota</span></li>
+      <li><kbd>![[nota]]</kbd><span>incrustar nota / imagen</span></li>
+      <li><kbd>#tag</kbd><span>etiqueta</span></li>
+      <li><kbd>cmd + l</kbd><span>crear / marcar checkbox</span></li>
+      <li><kbd>cmd + b / i</kbd><span>negrita / cursiva</span></li>
+      <li><kbd>cmd + k</kbd><span>insertar link markdown</span></li>
+      <li><kbd>cmd + / </kbd><span>comentar (%% oculto %%)</span></li>
+      <li><kbd>cmd + ] / [</kbd><span>indentar / desindentar</span></li>
+      <li><kbd>cmd + z / shift + z</kbd><span>deshacer / rehacer</span></li>
+    </ul>
+    <p class="note">-- cualquier atajo se cambia en Ajustes &gt; Teclas de acceso rápido</p>
+  </section>
+
+  <!-- 3. ZEN -->
+  <section id="zen">
+    <h2>pestañas</h2>
+    <ul>
+      <li><kbd>cmd + t</kbd><span>nueva pestaña</span></li>
+      <li><kbd>cmd + w</kbd><span>cerrar pestaña</span></li>
+      <li><kbd>cmd + shift + t</kbd><span>reabrir pestaña cerrada</span></li>
+      <li><kbd>cmd + 1 … 8</kbd><span>ir a pestaña N</span></li>
+      <li><kbd>cmd + 9</kbd><span>ir a la última pestaña</span></li>
+      <li><kbd>ctrl + tab</kbd><span>siguiente pestaña</span></li>
+      <li><kbd>ctrl + shift + tab</kbd><span>pestaña anterior</span></li>
+      <li><kbd>cmd + n</kbd><span>nueva ventana</span></li>
+      <li><kbd>cmd + shift + p</kbd><span>ventana privada</span></li>
+    </ul>
+    <h2>navegar</h2>
+    <ul>
+      <li><kbd>cmd + l</kbd><span>ir a la barra de direcciones</span></li>
+      <li><kbd>cmd + shift + c</kbd><span>copiar URL actual (zen)</span></li>
+      <li><kbd>cmd + [ / ]</kbd><span>atrás / adelante</span></li>
+      <li><kbd>cmd + r</kbd><span>recargar</span></li>
+      <li><kbd>cmd + shift + r</kbd><span>recargar sin caché</span></li>
+      <li><kbd>cmd + f</kbd><span>buscar en la página</span></li>
+      <li><kbd>cmd + d</kbd><span>guardar marcador</span></li>
+      <li><kbd>cmd + y</kbd><span>historial</span></li>
+      <li><kbd>cmd + + / - / 0</kbd><span>zoom más / menos / normal</span></li>
+      <li><kbd>space / shift + space</kbd><span>bajar / subir una pantalla</span></li>
+    </ul>
+    <h2>propio de zen</h2>
+    <ul>
+      <li><kbd>opt + clic</kbd><span>glance: previsualizar link sin abrirlo</span></li>
+      <li><kbd>ctrl + opt + c</kbd><span>modo compacto (ocultar barra lateral)</span></li>
+      <li><kbd>ctrl + opt + v</kbd><span>split view vertical</span></li>
+      <li><kbd>ctrl + opt + h</kbd><span>split view horizontal</span></li>
+      <li><kbd>ctrl + opt + g</kbd><span>split view en grilla</span></li>
+      <li><kbd>ctrl + opt + u</kbd><span>quitar split view</span></li>
+    </ul>
+    <h2>dev</h2>
+    <ul>
+      <li><kbd>cmd + opt + i</kbd><span>herramientas de desarrollo</span></li>
+      <li><kbd>cmd + u</kbd><span>ver código fuente</span></li>
+    </ul>
+    <p class="note">-- los atajos de zen se revisan y cambian en Ajustes &gt; Keyboard Shortcuts</p>
+  </section>
+
+  <!-- 4. MACOS -->
+  <section id="mac">
+    <h2>básico</h2>
+    <ul>
+      <li><kbd>cmd + c / x / v</kbd><span>copiar / cortar / pegar</span></li>
+      <li><kbd>cmd + z / shift + z</kbd><span>deshacer / rehacer</span></li>
+      <li><kbd>cmd + a</kbd><span>seleccionar todo</span></li>
+      <li><kbd>cmd + s</kbd><span>guardar</span></li>
+      <li><kbd>cmd + ,</kbd><span>ajustes de la app actual</span></li>
+      <li><kbd>cmd + space</kbd><span>spotlight</span></li>
+      <li><kbd>ctrl + cmd + space</kbd><span>emojis y símbolos</span></li>
+    </ul>
+    <h2>apps y ventanas</h2>
+    <ul>
+      <li><kbd>cmd + tab</kbd><span>cambiar de app</span></li>
+      <li><kbd>cmd + `</kbd><span>cambiar entre ventanas de la misma app</span></li>
+      <li><kbd>cmd + w</kbd><span>cerrar ventana / pestaña</span></li>
+      <li><kbd>cmd + q</kbd><span>cerrar app</span></li>
+      <li><kbd>cmd + h</kbd><span>ocultar app</span></li>
+      <li><kbd>cmd + opt + h</kbd><span>ocultar todas las demás</span></li>
+      <li><kbd>cmd + m</kbd><span>minimizar</span></li>
+      <li><kbd>ctrl + cmd + f</kbd><span>pantalla completa</span></li>
+      <li><kbd>cmd + opt + esc</kbd><span>forzar cierre</span></li>
+      <li><kbd>ctrl + ↑</kbd><span>mission control</span></li>
+      <li><kbd>ctrl + ← / →</kbd><span>cambiar de escritorio</span></li>
+      <li><kbd>cmd + opt + d</kbd><span>mostrar / ocultar dock</span></li>
+      <li><kbd>ctrl + cmd + q</kbd><span>bloquear pantalla</span></li>
+    </ul>
+    <h2>capturas</h2>
+    <ul>
+      <li><kbd>cmd + shift + 3</kbd><span>pantalla completa</span></li>
+      <li><kbd>cmd + shift + 4</kbd><span>seleccionar área</span></li>
+      <li><kbd>cmd + shift + 4, space</kbd><span>capturar una ventana</span></li>
+      <li><kbd>cmd + shift + 5</kbd><span>menú de captura y grabación</span></li>
+      <li><kbd>+ ctrl</kbd><span>(a cualquiera) copiar al portapapeles en vez de guardar</span></li>
+    </ul>
+    <h2>finder</h2>
+    <ul>
+      <li><kbd>space</kbd><span>vista rápida</span></li>
+      <li><kbd>enter</kbd><span>renombrar</span></li>
+      <li><kbd>cmd + o / cmd + ↓</kbd><span>abrir</span></li>
+      <li><kbd>cmd + ↑</kbd><span>carpeta superior</span></li>
+      <li><kbd>cmd + shift + n</kbd><span>nueva carpeta</span></li>
+      <li><kbd>cmd + delete</kbd><span>mover a la papelera</span></li>
+      <li><kbd>cmd + opt + v</kbd><span>mover (después de cmd + c)</span></li>
+      <li><kbd>cmd + d</kbd><span>duplicar</span></li>
+      <li><kbd>cmd + i</kbd><span>obtener información</span></li>
+      <li><kbd>cmd + shift + g</kbd><span>ir a carpeta (escribir ruta)</span></li>
+      <li><kbd>cmd + shift + .</kbd><span>mostrar archivos ocultos</span></li>
+      <li><kbd>cmd + 1 / 2 / 3 / 4</kbd><span>vista íconos / lista / columnas / galería</span></li>
+    </ul>
+  </section>
+
+  <!-- 5. TERMINAL -->
+  <section id="term">
+    <h2>moverse en la línea</h2>
+    <ul>
+      <li><kbd>ctrl + a</kbd><span>inicio de línea</span></li>
+      <li><kbd>ctrl + e</kbd><span>fin de línea</span></li>
+      <li><kbd>opt + ← / →</kbd><span>saltar palabra</span></li>
+      <li><kbd>opt + clic</kbd><span>mover el cursor a donde haces clic</span></li>
+    </ul>
+    <h2>borrar</h2>
+    <ul>
+      <li><kbd>ctrl + u</kbd><span>borrar hasta el inicio</span></li>
+      <li><kbd>ctrl + k</kbd><span>borrar hasta el final</span></li>
+      <li><kbd>ctrl + w</kbd><span>borrar palabra anterior</span></li>
+      <li><kbd>ctrl + y</kbd><span>pegar lo último borrado</span></li>
+    </ul>
+    <h2>control</h2>
+    <ul>
+      <li><kbd>ctrl + c</kbd><span>cancelar comando en curso</span></li>
+      <li><kbd>ctrl + d</kbd><span>salir / cerrar sesión</span></li>
+      <li><kbd>ctrl + z</kbd><span>pausar proceso (fg para volver)</span></li>
+      <li><kbd>ctrl + l</kbd><span>limpiar pantalla</span></li>
+      <li><kbd>cmd + k</kbd><span>limpiar pantalla y scroll</span></li>
+    </ul>
+    <h2>historial y autocompletar</h2>
+    <ul>
+      <li><kbd>tab</kbd><span>autocompletar</span></li>
+      <li><kbd>↑ / ↓</kbd><span>comando anterior / siguiente</span></li>
+      <li><kbd>ctrl + r</kbd><span>buscar en el historial</span></li>
+      <li><kbd>!!</kbd><span>repetir último comando (sudo !!)</span></li>
+      <li><kbd>cd -</kbd><span>volver a la carpeta anterior</span></li>
+    </ul>
+    <h2>ventanas</h2>
+    <ul>
+      <li><kbd>cmd + t</kbd><span>nueva pestaña</span></li>
+      <li><kbd>cmd + n</kbd><span>nueva ventana</span></li>
+      <li><kbd>cmd + w</kbd><span>cerrar pestaña</span></li>
+      <li><kbd>cmd + shift + [ / ]</kbd><span>pestaña anterior / siguiente</span></li>
+      <li><kbd>cmd + + / -</kbd><span>tamaño de letra</span></li>
+    </ul>
+    <p class="note">-- en Terminal.app, opt + ← / → requiere "Usar Opción como tecla Meta" en Ajustes &gt; Perfiles &gt; Teclado</p>
+  </section>
+</div>
+
+<script>
+  const tabs = [...document.querySelectorAll('nav button')];
+  const q = document.getElementById('q');
+  function show(id) {
+    tabs.forEach(b => b.setAttribute('aria-selected', b.dataset.t === id));
+    document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === id));
+    try { localStorage.setItem('tab', id); } catch (e) {}
+    filter();
+  }
+  function filter() {
+    const v = q.value.toLowerCase().trim();
+    const sec = document.querySelector('section.on');
+    sec.querySelectorAll('li').forEach(li => li.classList.toggle('hidden', v && !li.textContent.toLowerCase().includes(v)));
+    sec.querySelectorAll('h2').forEach(h => {
+      const ul = h.nextElementSibling;
+      h.classList.toggle('hidden', !!v && !ul.querySelector('li:not(.hidden)'));
+    });
+  }
+  tabs.forEach(b => b.onclick = () => show(b.dataset.t));
+  q.oninput = filter;
+  const box = document.getElementById('helpbox');
+  document.getElementById('help').onclick = () => box.showModal();
+  document.getElementById('helpclose').onclick = () => box.close();
+  box.addEventListener('click', e => {
+    const r = box.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) box.close();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === '?' && document.activeElement !== q) { e.preventDefault(); box.open ? box.close() : box.showModal(); return; }
+    if (box.open) return;
+    if (document.activeElement === q) { if (e.key === 'Escape') { q.value=''; filter(); q.blur(); } return; }
+    if (e.key === '/') { e.preventDefault(); q.focus(); }
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= tabs.length) show(tabs[n-1].dataset.t);
+  });
+  let start = 'md';
+  try { start = localStorage.getItem('tab') || 'md'; } catch (e) {}
+  show(start);
+</script>
+</body>
+</html>
